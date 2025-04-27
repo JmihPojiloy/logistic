@@ -1,6 +1,6 @@
 namespace Logistics.Domain.Entities;
 
-public class OrderPromotions : BaseEntity
+public class OrderPromotion : BaseEntity
 {
     public int OrderId { get; set; }
     public Order? Order { get; set; }

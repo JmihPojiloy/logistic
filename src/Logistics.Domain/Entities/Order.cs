@@ -14,6 +14,7 @@ public class Order : BaseEntity
     public Route? Route { get; set; }
     public int PaymentId { get; set; }
     public Payment? Payment { get; set; }
-    public virtual required ICollection<Product> Products { get; set; }
+    public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
+    public virtual ICollection<OrderPromotion> OrderPromotions { get; set; } = new List<OrderPromotion>();
     public OrderStatus Status { get; set; }
 }

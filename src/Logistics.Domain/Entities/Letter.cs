@@ -5,6 +5,7 @@ namespace Logistics.Domain.Entities;
 public class Letter : BaseEntity
 {
     public int NotificationId { get; set; }
+    public Notification? Notification { get; set; }
     public int HashCode {get; set;}
     public required string SenderEmail {get; set;}
     public required string RecipientEmail {get; set;}

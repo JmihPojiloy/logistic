@@ -20,8 +20,7 @@ public sealed class Money : IEquatable<Money>
     }
 
     public Currency Currency { get; private init; }
-
-    // Основной конструктор (обязательные поля)
+    
     public Money(decimal sum, Currency currency)
     {
         if (sum < 0)
@@ -30,9 +29,8 @@ public sealed class Money : IEquatable<Money>
         Sum = sum;
         Currency = currency;
     }
-
-    // Для ORM (EF Core)
-    private Money()
+    
+    public Money()
     {
     }
 

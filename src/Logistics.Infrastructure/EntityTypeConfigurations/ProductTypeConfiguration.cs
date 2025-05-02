@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Logistics.Infrastructure.EntityTypeConfigurations;
 
+/// <summary>
+/// Настройка полей и связей сущности товар для базы данных
+/// </summary>
 public class ProductTypeConfiguration : IEntityTypeConfiguration<ProductEntity>
 {
     public void Configure(EntityTypeBuilder<ProductEntity> builder)

@@ -10,6 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Logistics.Infrastructure;
 
+/// <summary>
+/// Класс с методом расширения для регистрации сервисов слоя в DI
+/// </summary>
 public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)

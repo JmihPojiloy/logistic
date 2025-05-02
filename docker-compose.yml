@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: src/Logistics.Web/Dockerfile
+    ports:
+      - "8080:8080"
+    container_name: web-api
+    depends_on:
+      - db
+    networks:
+      - logistic-network
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    container_name: db_postgresql_container
+    networks:
+      - logistic-network
+volumes:
+  db_data:
+networks:
+  logistic-network:
+    driver: bridge

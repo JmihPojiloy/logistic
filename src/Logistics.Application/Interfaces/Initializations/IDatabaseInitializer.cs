@@ -1,6 +1,9 @@
 namespace Logistics.Application.Interfaces.Initializations;
 
+/// <summary>
+/// Интерфейс инициализации БД (для презентации)
+/// </summary>
 public interface IDatabaseInitializer
 {
-    Task InitializeAsync(CancellationToken cancellationToken = default);
+    void Initialize();
 }

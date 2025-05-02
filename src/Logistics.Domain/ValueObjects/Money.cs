@@ -16,7 +16,7 @@ public sealed class Money : IEquatable<Money>
     public decimal Sum
     {
         get => _sum;
-        private init => _sum = Math.Round(value, DecimalPlaces);
+        set => _sum = Math.Round(value, DecimalPlaces);
     }
 
     public Currency Currency { get; private init; }
@@ -35,7 +35,7 @@ public sealed class Money : IEquatable<Money>
     }
 
     /// <summary>
-    /// Конвертация валют через внешний сервис (инфраструктурная зависимость)
+    /// Конвертация валют через внешний сервис
     /// </summary>
     public Money ConvertTo(Currency targetCurrency, ICurrencyConverter converter)
     {

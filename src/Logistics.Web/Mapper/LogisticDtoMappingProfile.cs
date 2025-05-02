@@ -4,6 +4,9 @@ using Logistics.Web.Dtos.Products;
 
 namespace Logistics.Web.Mapper;
 
+/// <summary>
+/// Класс настройки маппинга сущности товар
+/// </summary>
 public class LogisticDtoMappingProfile : Profile
 {
     public LogisticDtoMappingProfile()

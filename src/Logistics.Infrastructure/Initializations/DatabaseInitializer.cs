@@ -8,6 +8,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Logistics.Infrastructure.Initializations;
 
+/// <summary>
+/// Класс для инициализации БД (для презентации)
+/// </summary>
 public class DatabaseInitializer : IDatabaseInitializer
 {
     private readonly LogisticDbContext _context;
@@ -19,12 +22,12 @@ public class DatabaseInitializer : IDatabaseInitializer
         _logger = logger;
     }
 
-    public async Task InitializeAsync(CancellationToken cancellationToken = default)
+    public void Initialize()
     {
         _logger.LogInformation("Starting migration process...");
         try
         {
-            await _context.Database.MigrateAsync(cancellationToken);
+            _context.Database.Migrate();
             _logger.LogInformation("Database migration completed successfully.");
 
             if (!_context.Products.Any())
@@ -56,7 +59,7 @@ public class DatabaseInitializer : IDatabaseInitializer
                 };
 
                 _context.Products.AddRange(products);
-                await _context.SaveChangesAsync(cancellationToken);
+                _context.SaveChanges();
                 _logger.LogInformation("Initial product data seeded successfully.");
             }
             else

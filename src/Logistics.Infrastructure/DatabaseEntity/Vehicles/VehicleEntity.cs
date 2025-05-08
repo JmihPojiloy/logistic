@@ -22,12 +22,12 @@ public class VehicleEntity : BaseDatabaseEntity
     /// <summary>
     /// Коллекция заказов
     /// </summary>
-    public ICollection<OrderEntity>? Orders { get; set; }
+    public ICollection<OrderEntity> Orders { get; set; } = new List<OrderEntity>();
     
     /// <summary>
     /// Сведения о ТО транспорта
     /// </summary>
-    public ICollection<VehicleMaintenanceEntity>? VehicleMaintenance { get; set; }
+    public ICollection<VehicleMaintenanceEntity> VehicleMaintenance { get; set; } = new List<VehicleMaintenanceEntity>();
     
     /// <summary>
     /// Навигационное свойство отслеживания местоположения транспорта

@@ -36,5 +36,5 @@ public class Payment : BaseEntity
     /// <summary>
     /// Отмены или возвраты по данному платежу
     /// </summary>
-    public ICollection<RefundedPayment>? CancelledPayments { get; set; }
+    public ICollection<RefundedPayment> CancelledPayments { get; set; } = new List<RefundedPayment>();
 }

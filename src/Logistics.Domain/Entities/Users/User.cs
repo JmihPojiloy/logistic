@@ -43,15 +43,15 @@ public class User : BaseEntity
     /// <summary>
     /// Адреса пользователя
     /// </summary>
-    public ICollection<Address>? Addresses { get; set; }
+    public ICollection<Address> Addresses { get; set; } = new List<Address>();
     
     /// <summary>
     /// Заказы
     /// </summary>
-    public ICollection<Order>? Orders { get; set; }
+    public ICollection<Order> Orders { get; set; } = new List<Order>();
     
     /// <summary>
     /// Уведомления пользователя
     /// </summary>
-    public ICollection<Notification>? Notifications { get; set; }
+    public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 }

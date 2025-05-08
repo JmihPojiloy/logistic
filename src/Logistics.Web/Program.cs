@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Logistics.Application;
 using Logistics.Application.Interfaces.Initializations;
 using Logistics.Infrastructure;
@@ -8,7 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+        options.JsonSerializerOptions.MaxDepth = 64;
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

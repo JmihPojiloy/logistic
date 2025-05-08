@@ -72,7 +72,7 @@ public class DatabaseInitializer : IDatabaseInitializer
                 Height = 17,
                 Width = 8,
                 Code = 760000,
-                CreatedOn = DateTime.Now
+                CreatedOn = DateTime.UtcNow
             },
             new()
             {
@@ -83,7 +83,7 @@ public class DatabaseInitializer : IDatabaseInitializer
                 Height = 15,
                 Width = 7,
                 Code = 37000,
-                CreatedOn = DateTime.Now
+                CreatedOn = DateTime.UtcNow
             }
         };
         
@@ -100,11 +100,11 @@ public class DatabaseInitializer : IDatabaseInitializer
                 ApartmentNumber = "2",
                 Latitude = 28.34,
                 Longitude = 33.33,
-                CreatedOn = DateTime.Now
+                CreatedOn = DateTime.UtcNow
             },
             Square = 200,
             Status = WarehouseStatus.Open,
-            CreatedOn = DateTime.Now
+            CreatedOn = DateTime.UtcNow
         };
         
         var inventories = new List<InventoryEntity>
@@ -114,14 +114,14 @@ public class DatabaseInitializer : IDatabaseInitializer
                 Product = products[0],
                 Warehouse = warehouse,
                 Quantity = 100,
-                CreatedOn = DateTime.Now
+                CreatedOn = DateTime.UtcNow
             },
             new()
             {
                 Product = products[1],
                 Warehouse = warehouse,
                 Quantity = 50,
-                CreatedOn = DateTime.Now
+                CreatedOn = DateTime.UtcNow
             }
         };
 
@@ -148,7 +148,7 @@ public class DatabaseInitializer : IDatabaseInitializer
             LoadCapacity = 30,
             MileAge = 10000,
             Status = VehicleStatus.Free,
-            CreatedOn = DateTime.Now
+            CreatedOn = DateTime.UtcNow
         };
 
         var driver = new DriverEntity
@@ -160,7 +160,7 @@ public class DatabaseInitializer : IDatabaseInitializer
             DriverLicense = "TT123456",
             Gender = Gender.Male,
             PhoneNumber = 1234567890,
-            CreatedOn = DateTime.Now,
+            CreatedOn = DateTime.UtcNow,
             Status = DriverStatus.Free,
             Vehicle = vehicle
         };
@@ -169,10 +169,10 @@ public class DatabaseInitializer : IDatabaseInitializer
 
         var maintenance = new VehicleMaintenanceEntity
         {
-            MaintenanceDate = DateTime.Now,
+            MaintenanceDate = DateTime.UtcNow,
             Description = "Test maintenance",
             MaintenancePrice = new Money(10000m, Currency.RUB),
-            CreatedOn = DateTime.Now,
+            CreatedOn = DateTime.UtcNow,
             Vehicle = vehicle
         };
 

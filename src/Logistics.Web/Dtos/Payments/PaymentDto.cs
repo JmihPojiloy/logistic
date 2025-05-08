@@ -36,5 +36,5 @@ public class PaymentDto : BaseDto
     /// <summary>
     /// Отмены или возвраты по данному платежу
     /// </summary>
-    public ICollection<RefundedPaymentDto>? CancelledPayments { get; set; }
+    public ICollection<RefundedPaymentDto> CancelledPayments { get; set; } = new List<RefundedPaymentDto>();
 }

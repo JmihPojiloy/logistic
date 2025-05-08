@@ -35,5 +35,5 @@ public class PromotionEntity : BaseDatabaseEntity
     /// <summary>
     /// Коллекция заказов которые участвуют в акции
     /// </summary>
-    public ICollection<OrderPromotionEntity>? OrderPromotions { get; set; }
+    public ICollection<OrderPromotionEntity> OrderPromotions { get; set; } = new List<OrderPromotionEntity>();
 }

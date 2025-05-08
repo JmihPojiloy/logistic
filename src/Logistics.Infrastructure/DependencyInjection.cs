@@ -22,6 +22,7 @@ public static class DependencyInjection
         services.AddDbContext<LogisticDbContext>(options => options.UseNpgsql(connectionString));
         services.AddAutoMapper(typeof(LogisticEntitiesMappingProfile));
         services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<IWarehouseRepository, WarehouseRepository>();
         services.AddScoped<IDatabaseInitializer, DatabaseInitializer>();
         
         return services;

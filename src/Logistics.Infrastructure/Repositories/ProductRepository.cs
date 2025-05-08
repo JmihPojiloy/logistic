@@ -31,7 +31,9 @@ public class ProductRepository : IProductRepository
     public async Task<IReadOnlyList<Product>> GetAllProductsAsync(CancellationToken cancellationToken)
     {
         var productsEntities = await _logisticDbContext.Products
-                .AsNoTracking()
+            .AsNoTracking()
+            .Include(p => p.Inventories)
+                .ThenInclude(i => i.Warehouse)
                 .ToListAsync(cancellationToken: cancellationToken);
         
         var products = _mapper.Map<IReadOnlyList<Product>>(productsEntities);
@@ -49,6 +51,8 @@ public class ProductRepository : IProductRepository
     {
         var productEntity = await _logisticDbContext.Products
             .AsNoTracking()
+            .Include(p => p.Inventories)
+            .ThenInclude(i => i.Warehouse)
             .FirstOrDefaultAsync(p => p.Id == productId, cancellationToken: cancellationToken);
         if (productEntity == null) throw new NotFoundException("Product", productId);
         var product = _mapper.Map<Product>(productEntity);

@@ -49,12 +49,12 @@ public class OrderDto : BaseDto
     /// <summary>
     /// Связь с таблицей товаров
     /// </summary>
-    public ICollection<OrderProductDto>? OrderProducts { get; set; }
+    public ICollection<OrderProductDto> OrderProducts { get; set; } = new List<OrderProductDto>();
     
     /// <summary>
     /// Связь с таблицей промоакции
     /// </summary>
-    public ICollection<OrderPromotionDto>? OrderPromotions { get; set; }
+    public ICollection<OrderPromotionDto> OrderPromotions { get; set; } = new List<OrderPromotionDto>();
     
     /// <summary>
     /// Статус заказа

@@ -49,12 +49,12 @@ public class Order : BaseEntity
     /// <summary>
     /// Связь с таблицей товаров
     /// </summary>
-    public ICollection<OrderProduct>? OrderProducts { get; set; }
+    public ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
     
     /// <summary>
     /// Связь с таблицей промоакции
     /// </summary>
-    public ICollection<OrderPromotion>? OrderPromotions { get; set; }
+    public ICollection<OrderPromotion> OrderPromotions { get; set; } = new List<OrderPromotion>();
     
     /// <summary>
     /// Статус заказа

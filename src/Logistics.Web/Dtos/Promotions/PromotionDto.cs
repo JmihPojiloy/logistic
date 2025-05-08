@@ -35,5 +35,5 @@ public class PromotionDto : BaseDto
     /// <summary>
     /// Коллекция заказов которые участвуют в акции
     /// </summary>
-    public ICollection<OrderPromotionDto>? OrderPromotions { get; set; }
+    public ICollection<OrderPromotionDto> OrderPromotions { get; set; } = new List<OrderPromotionDto>();
 }

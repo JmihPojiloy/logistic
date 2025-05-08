@@ -1,5 +1,3 @@
-using Logistics.Domain.Entities.Orders;
-using Logistics.Domain.Entities.Vehicles;
 using Logistics.Domain.ValueObjects;
 using Logistics.Infrastructure.DatabaseEntity.Addresses;
 using Logistics.Infrastructure.DatabaseEntity.Delivery;
@@ -11,7 +9,6 @@ using Logistics.Infrastructure.DatabaseEntity.Promotions;
 using Logistics.Infrastructure.DatabaseEntity.Users;
 using Logistics.Infrastructure.DatabaseEntity.Vehicles;
 using Logistics.Infrastructure.DatabaseEntity.Warehouses;
-using Logistics.Infrastructure.EntityTypeConfigurations;
 using Logistics.Infrastructure.EntityTypeConfigurations.Addresses;
 using Logistics.Infrastructure.EntityTypeConfigurations.Delivery;
 using Logistics.Infrastructure.EntityTypeConfigurations.Notifications;
@@ -42,7 +39,7 @@ public class LogisticDbContext : DbContext
     // orders
     public DbSet<OrderEntity> Orders { get; set; }
     public DbSet<OrderProductEntity> OrderProducts { get; set; }
-    public DbSet<OrderPromotion> OrderPromotions { get; set; }
+    public DbSet<OrderPromotionEntity> OrderPromotions { get; set; }
     
     //payments
     public DbSet<PaymentEntity> Payments { get; set; }
@@ -57,7 +54,7 @@ public class LogisticDbContext : DbContext
     //vehicle
     public DbSet<VehicleEntity> Vehicles { get; set; }
     public DbSet<DriverEntity> Drivers { get; set; }
-    public DbSet<VehicleMaintenance> VehicleMaintenances { get; set; }
+    public DbSet<VehicleMaintenanceEntity> VehicleMaintenances { get; set; }
     
     //warehouse
     public DbSet<WarehouseEntity> Warehouses { get; set; }

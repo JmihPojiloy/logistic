@@ -43,15 +43,15 @@ public class UserDto : BaseDto
     /// <summary>
     /// Адреса пользователя
     /// </summary>
-    public ICollection<AddressDto>? Addresses { get; set; }
+    public ICollection<AddressDto> Addresses { get; set; } = new List<AddressDto>();
     
     /// <summary>
     /// Заказы
     /// </summary>
-    public ICollection<OrderDto>? Orders { get; set; }
+    public ICollection<OrderDto> Orders { get; set; } = new List<OrderDto>();
     
     /// <summary>
     /// Уведомления пользователя
     /// </summary>
-    public ICollection<NotificationDto>? Notifications { get; set; }
+    public ICollection<NotificationDto> Notifications { get; set; } = new List<NotificationDto>();
 }

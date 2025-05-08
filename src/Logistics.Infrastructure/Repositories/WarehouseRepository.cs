@@ -29,6 +29,10 @@ public class WarehouseRepository : IWarehouseRepository
     public async Task<IReadOnlyList<Warehouse>> GetAllWarehousesAsync(CancellationToken cancellationToken)
     {
         var warehouseEntities = await _context.Warehouses
+            .AsNoTracking()
+            .Include(w => w.Inventories)
+            .ThenInclude(i => i.Product)
+            .Include(w => w.Address)
             .ToListAsync(cancellationToken: cancellationToken);
         
         return _mapper.Map<List<Warehouse>>(warehouseEntities);
@@ -44,6 +48,10 @@ public class WarehouseRepository : IWarehouseRepository
     public async Task<Warehouse> GetWarehouseByIdAsync(int warehouseId, CancellationToken cancellationToken)
     {
         var warehouseEntity = await _context.Warehouses
+            .AsNoTracking()
+            .Include(w => w.Inventories)
+            .ThenInclude(i => i.Product)
+            .Include(w => w.Address)
             .FirstOrDefaultAsync(w => w.Id == warehouseId, cancellationToken);
         if(warehouseEntity == null) throw new NotFoundException("Warehouse", warehouseId);
         

@@ -21,7 +21,7 @@ public class WarehouseEntity : BaseDatabaseEntity
     /// <summary>
     /// Остатки на складе
     /// </summary>
-    public ICollection<InventoryEntity>? Inventories { get; set; }
+    public ICollection<InventoryEntity> Inventories { get; set; } = new List<InventoryEntity>();
     
     /// <summary>
     /// Название склада

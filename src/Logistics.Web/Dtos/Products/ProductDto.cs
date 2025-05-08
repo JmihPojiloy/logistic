@@ -46,5 +46,5 @@ public class ProductDto: BaseDto
     /// <summary>
     /// Остатки на складе
     /// </summary>
-    public ICollection<InventoryDto>? Inventories { get; set; }
+    public ICollection<InventoryDto> Inventories { get; set; } = new List<InventoryDto>();
 }

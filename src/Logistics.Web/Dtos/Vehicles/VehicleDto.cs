@@ -22,12 +22,12 @@ public class VehicleDto : BaseDto
     /// <summary>
     /// Коллекция заказов
     /// </summary>
-    public virtual ICollection<OrderDto>? Orders { get; set; }
+    public virtual ICollection<OrderDto> Orders { get; set; } = new List<OrderDto>();
     
     /// <summary>
     /// Сведения о ТО транспорта
     /// </summary>
-    public ICollection<VehicleMaintenanceDto>? VehicleMaintenance { get; set; }
+    public ICollection<VehicleMaintenanceDto> VehicleMaintenance { get; set; } = new List<VehicleMaintenanceDto>();
     
     /// <summary>
     /// Навигационное свойство отслеживания местоположения транспорта

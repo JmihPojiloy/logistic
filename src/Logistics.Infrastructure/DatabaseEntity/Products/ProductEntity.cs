@@ -47,5 +47,5 @@ public class ProductEntity : BaseDatabaseEntity
     /// <summary>
     /// Остатки на складе
     /// </summary>
-    public ICollection<InventoryEntity>? Inventories { get; set; }
+    public ICollection<InventoryEntity> Inventories { get; set; } = new List<InventoryEntity>(); 
 }

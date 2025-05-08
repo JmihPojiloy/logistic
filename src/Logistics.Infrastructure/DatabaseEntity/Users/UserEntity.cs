@@ -46,15 +46,15 @@ public class UserEntity : BaseDatabaseEntity
     /// <summary>
     /// Адреса пользователя
     /// </summary>
-    public ICollection<AddressEntity>? Addresses { get; set; }
+    public ICollection<AddressEntity> Addresses { get; set; } = new List<AddressEntity>();
     
     /// <summary>
     /// Заказы
     /// </summary>
-    public ICollection<OrderEntity>? Orders { get; set; }
+    public ICollection<OrderEntity> Orders { get; set; } = new List<OrderEntity>();
     
     /// <summary>
     /// Уведомления пользователю
     /// </summary>
-    public ICollection<NotificationEntity>? Notifications { get; set; }
+    public ICollection<NotificationEntity> Notifications { get; set; } = new List<NotificationEntity>();
 }

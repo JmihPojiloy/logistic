@@ -35,8 +35,10 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+// тестовое решение для демонстрации, позже раскомментировать
+// TODO
+// if (app.Environment.IsDevelopment())
+// {
     app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI(options =>
@@ -44,7 +46,7 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
         options.RoutePrefix = string.Empty;
     });
-}
+// }
 
 app.UseHttpsRedirection();
 app.MapControllers();

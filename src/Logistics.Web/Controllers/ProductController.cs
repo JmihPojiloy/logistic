@@ -27,8 +27,7 @@ public class ProductController : ControllerBase
     /// </summary>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>ОК со списком товаров</returns>
-    [Route("getall")]
-    [HttpGet]
+    [HttpGet("getall")]
     public async Task<IActionResult> GetAllProductsAsync(CancellationToken cancellationToken)
     {
         var products = await _productService.GetAllProductsAsync(cancellationToken);
@@ -43,8 +42,7 @@ public class ProductController : ControllerBase
     /// <param name="id">Id товара</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>OK с записью товара</returns>
-    [Route("getbyid{id:int}")]
-    [HttpGet]
+    [HttpGet("getbyid/{id:int}")]
     public async Task<IActionResult> GetProductByIdAsync(int id, CancellationToken cancellationToken)
     {
         var product = await _productService.GetProductByIdAsync(id, cancellationToken);
@@ -60,15 +58,12 @@ public class ProductController : ControllerBase
     /// <param name="productDto">Товар</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>OK с добавленным товаром</returns>
-    [Route("add")]
-    [HttpPost]
+    [HttpPost("add")]
     public async Task<IActionResult> AddProductAsync([FromBody]ProductDto productDto, CancellationToken cancellationToken)
     {
-        var product = _mapper.Map<Product>(productDto);
-        var processedProduct = await _productService.AddOrUpdateProductAsync(product, cancellationToken);
-        var processedProductDto = _mapper.Map<ProductDto>(processedProduct);
+        var product = await AddOrUpdateAsync(productDto, cancellationToken);
         
-        return Ok(processedProductDto);
+        return Ok(product);
     }
 
     /// <summary>
@@ -77,15 +72,12 @@ public class ProductController : ControllerBase
     /// <param name="productDto">Обновляемый товар</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>ОК с обновленным товаром</returns>
-    [Route("update")]
-    [HttpPut]
-    public async Task<IActionResult> UpdateProductAsync(ProductDto productDto, CancellationToken cancellationToken)
+    [HttpPut("update")]
+    public async Task<IActionResult> UpdateProductAsync([FromBody]ProductDto productDto, CancellationToken cancellationToken)
     {
-        var product = _mapper.Map<Product>(productDto);
-        var processedProduct = await _productService.AddOrUpdateProductAsync(product, cancellationToken);
-        var processedProductDto = _mapper.Map<ProductDto>(processedProduct);
+        var product = await AddOrUpdateAsync(productDto, cancellationToken);
         
-        return Ok(processedProductDto);
+        return Ok(product);
     }
 
     /// <summary>
@@ -94,12 +86,24 @@ public class ProductController : ControllerBase
     /// <param name="id">Id товара</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>ОК с Id товара</returns>
-    [Route("delete{id:int}")]
-    [HttpDelete]
+    [HttpDelete("delete/{id:int}")]
     public async Task<IActionResult> DeleteProductAsync(int id, CancellationToken cancellationToken)
     {
         var result = await _productService.DeleteProductAsync(id, cancellationToken);
         
         return Ok(result);
+    }
+    
+    /// <summary>
+    /// Вспомогательный метод для добавления или обновления товара
+    /// </summary>
+    /// <param name="productDto">Товар</param>
+    /// <param name="cancellationToken">Токен отмены</param>
+    /// <returns>Товар</returns>
+    private async Task<ProductDto> AddOrUpdateAsync(ProductDto productDto, CancellationToken cancellationToken)
+    {
+        var product = _mapper.Map<Product>(productDto);
+        var processedProduct = await _productService.AddOrUpdateProductAsync(product, cancellationToken);
+        return _mapper.Map<ProductDto>(processedProduct);
     }
 }

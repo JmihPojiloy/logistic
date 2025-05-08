@@ -1,3 +1,4 @@
+using Logistics.Domain.Entities.Warehouses;
 using Logistics.Domain.ValueObjects;
 
 namespace Logistics.Domain.Entities.Products;
@@ -41,4 +42,9 @@ public class Product : BaseEntity
     /// Артикул
     /// </summary>
     public int Code {get; set;}
+    
+    /// <summary>
+    /// Остатки на складе
+    /// </summary>
+    public ICollection<Inventory>? Inventories { get; set; }
 }

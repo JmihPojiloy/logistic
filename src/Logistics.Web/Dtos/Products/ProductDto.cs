@@ -1,4 +1,5 @@
 using Logistics.Domain.ValueObjects;
+using Logistics.Web.Dtos.Warehouses;
 
 namespace Logistics.Web.Dtos.Products;
 
@@ -41,4 +42,9 @@ public class ProductDto: BaseDto
     /// Артикул товара
     /// </summary>
     public int Code {get; set;}
+    
+    /// <summary>
+    /// Остатки на складе
+    /// </summary>
+    public ICollection<InventoryDto>? Inventories { get; set; }
 }

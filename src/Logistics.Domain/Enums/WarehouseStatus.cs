@@ -1,7 +1,10 @@
 namespace Logistics.Domain.Enums;
 
+/// <summary>
+/// Определяет статус склада
+/// </summary>
 public enum WarehouseStatus
 {
-    Open,
-    Closed,
+    Open, // открыт
+    Closed, // закрыт
 }

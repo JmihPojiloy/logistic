@@ -1,5 +1,8 @@
 namespace Logistics.Domain.Enums;
 
+/// <summary>
+/// Перечисление валют
+/// </summary>
 public enum Currency
 {
     RUB = 0,

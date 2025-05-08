@@ -1,11 +1,13 @@
 using Logistics.Domain.ValueObjects;
+using Logistics.Infrastructure.DatabaseEntity.Orders;
+using Logistics.Infrastructure.DatabaseEntity.Warehouses;
 
 namespace Logistics.Infrastructure.DatabaseEntity.Products;
 
 /// <summary>
 /// Класс для хранения сущности товара в БД
 /// </summary>
-public class ProductEntity : BaseEntity
+public class ProductEntity : BaseDatabaseEntity
 {
     /// <summary>
     /// Название товара
@@ -41,4 +43,9 @@ public class ProductEntity : BaseEntity
     /// Артикул товара
     /// </summary>
     public int Code {get; set;}
+    
+    /// <summary>
+    /// Остатки на складе
+    /// </summary>
+    public ICollection<InventoryEntity>? Inventories { get; set; }
 }

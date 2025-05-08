@@ -2,7 +2,10 @@ using Logistics.Application.Interfaces.Initializations;
 using Logistics.Domain.Enums;
 using Logistics.Domain.ValueObjects;
 using Logistics.Infrastructure.Database;
+using Logistics.Infrastructure.DatabaseEntity.Addresses;
 using Logistics.Infrastructure.DatabaseEntity.Products;
+using Logistics.Infrastructure.DatabaseEntity.Vehicles;
+using Logistics.Infrastructure.DatabaseEntity.Warehouses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -22,6 +25,9 @@ public class DatabaseInitializer : IDatabaseInitializer
         _logger = logger;
     }
 
+    /// <summary>
+    /// Общий метод инициализации БД
+    /// </summary>
     public void Initialize()
     {
         _logger.LogInformation("Starting migration process...");
@@ -30,42 +36,17 @@ public class DatabaseInitializer : IDatabaseInitializer
             _context.Database.Migrate();
             _logger.LogInformation("Database migration completed successfully.");
 
-            if (!_context.Products.Any())
+            if (!_context.Products.Any() && !_context.Warehouses.Any())
             {
-                _logger.LogInformation("No products found. Seeding initial data...");
-
-                var products = new List<ProductEntity>
-                {
-                    new()
-                    {
-                        Name = "Смартфон Xiaomi Redmi A3x 3/64GB Midnight Black",
-                        Description = "Новый, без дефектов, отличное состояние",
-                        Price = new Money(6990m, Currency.RUB),
-                        Weight = 0.2,
-                        Height = 17,
-                        Width = 8,
-                        Code = 760000
-                    },
-                    new()
-                    {
-                        Name = "Смартфон Apple iPhone 14 128GB MPU93CH/A Black",
-                        Description = "Новый, без дефектов, отличное состояние",
-                        Price = new Money(54990m, Currency.RUB),
-                        Weight = 0.17,
-                        Height = 15,
-                        Width = 7,
-                        Code = 37000
-                    }
-                };
-
-                _context.Products.AddRange(products);
-                _context.SaveChanges();
-                _logger.LogInformation("Initial product data seeded successfully.");
+                InitProductsAndWarehouse();
             }
-            else
+
+            if (!_context.Vehicles.Any())
             {
-                _logger.LogInformation("Products already exist. Skipping seeding.");
+                InitVehicles();
             }
+
+            _context.SaveChanges();
         }
         catch (Exception ex)
         {
@@ -73,4 +54,131 @@ public class DatabaseInitializer : IDatabaseInitializer
         }
     }
 
+    /// <summary>
+    /// Инициализация склада с товарами
+    /// </summary>
+    private void InitProductsAndWarehouse()
+    {
+        _logger.LogInformation("Seeding initial data for products and warehouse...");
+
+        var products = new List<ProductEntity>
+        {
+            new()
+            {
+                Name = "Смартфон Xiaomi Redmi A3x 3/64GB Midnight Black",
+                Description = "Новый, без дефектов, отличное состояние",
+                Price = new Money(6990m, Currency.RUB),
+                Weight = 0.2,
+                Height = 17,
+                Width = 8,
+                Code = 760000,
+                CreatedOn = DateTime.Now
+            },
+            new()
+            {
+                Name = "Смартфон Apple iPhone 14 128GB MPU93CH/A Black",
+                Description = "Новый, без дефектов, отличное состояние",
+                Price = new Money(54990m, Currency.RUB),
+                Weight = 0.17,
+                Height = 15,
+                Width = 7,
+                Code = 37000,
+                CreatedOn = DateTime.Now
+            }
+        };
+        
+        var warehouse = new WarehouseEntity
+        {
+            Name = "Тестовый склад",
+            Address = new AddressEntity
+            {
+                Zip = "12345",
+                County = "Тест страна",
+                City = "Тест город",
+                Street = "Тест улица",
+                HouseNumber = "1",
+                ApartmentNumber = "2",
+                Latitude = 28.34,
+                Longitude = 33.33,
+                CreatedOn = DateTime.Now
+            },
+            Square = 200,
+            Status = WarehouseStatus.Open,
+            CreatedOn = DateTime.Now
+        };
+        
+        var inventories = new List<InventoryEntity>
+        {
+            new()
+            {
+                Product = products[0],
+                Warehouse = warehouse,
+                Quantity = 100,
+                CreatedOn = DateTime.Now
+            },
+            new()
+            {
+                Product = products[1],
+                Warehouse = warehouse,
+                Quantity = 50,
+                CreatedOn = DateTime.Now
+            }
+        };
+
+        products[0].Inventories = new List<InventoryEntity> { inventories[0] };
+        products[1].Inventories = new List<InventoryEntity> { inventories[1] };
+        warehouse.Inventories = inventories;
+        
+        _context.AddRange(products);
+        _context.Warehouses.Add(warehouse);
+        _logger.LogInformation("Initial warehouse and product data seeded successfully.");
+    }
+
+
+    /// <summary>
+    /// Метод инициализации сущности "Транспорт"
+    /// </summary>
+    private void InitVehicles()
+    {
+        _logger.LogInformation("No vehicles found. Seeding initial data...");
+
+        var vehicle = new VehicleEntity
+        {
+            Name = "Test vehicle",
+            LoadCapacity = 30,
+            MileAge = 10000,
+            Status = VehicleStatus.Free,
+            CreatedOn = DateTime.Now
+        };
+
+        var driver = new DriverEntity
+        {
+            FirstName = "Test",
+            LastName = "Test",
+            MiddleName = "Test",
+            Email = "test@test.com",
+            DriverLicense = "TT123456",
+            Gender = Gender.Male,
+            PhoneNumber = 1234567890,
+            CreatedOn = DateTime.Now,
+            Status = DriverStatus.Free,
+            Vehicle = vehicle
+        };
+
+        vehicle.Driver = driver;
+
+        var maintenance = new VehicleMaintenanceEntity
+        {
+            MaintenanceDate = DateTime.Now,
+            Description = "Test maintenance",
+            MaintenancePrice = new Money(10000m, Currency.RUB),
+            CreatedOn = DateTime.Now,
+            Vehicle = vehicle
+        };
+
+        vehicle.VehicleMaintenance = new List<VehicleMaintenanceEntity> { maintenance };
+
+        _context.Vehicles.Add(vehicle);
+        _logger.LogInformation("Initial vehicle data seeded successfully.");
+    }
 }

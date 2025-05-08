@@ -3,7 +3,7 @@ namespace Logistics.Domain.Entities;
 /// <summary>
 /// Базовый класс
 /// </summary>
-public class BaseEntity
+public abstract class BaseEntity
 {
     /// <summary>
     /// Идентификатор БД

@@ -1,7 +1,10 @@
 namespace Logistics.Domain.Enums;
 
+/// <summary>
+/// Пол
+/// </summary>
 public enum Gender
 {
-    Male,
-    Female
+    Male, // мужской 
+    Female // женский
 }

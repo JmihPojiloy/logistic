@@ -5,6 +5,7 @@ using Logistics.Domain.Entities.Products;
 using Logistics.Infrastructure.Database;
 using Logistics.Infrastructure.DatabaseEntity.Products;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Logistics.Infrastructure.Repositories;
 
@@ -49,7 +50,7 @@ public class ProductRepository : IProductRepository
         var productEntity = await _logisticDbContext.Products
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id == productId, cancellationToken: cancellationToken);
-        
+        if (productEntity == null) throw new NotFoundException("Product", productId);
         var product = _mapper.Map<Product>(productEntity);
         
         return product;
@@ -64,21 +65,22 @@ public class ProductRepository : IProductRepository
     public async Task<Product> AddOrUpdateProductAsync(Product product, CancellationToken cancellationToken)
     {
         var productEntity = _mapper.Map<ProductEntity>(product);
-
+        EntityEntry<ProductEntity> result;
+        
         if (productEntity.Id == 0)
         {
             productEntity.CreatedOn = DateTime.Now;
-            await _logisticDbContext.Products
+            result = await _logisticDbContext.Products
                 .AddAsync(productEntity, cancellationToken);
         }
         else
         {
-            _logisticDbContext.Products.Update(productEntity);
+            result = _logisticDbContext.Products.Update(productEntity);
         }
 
         await _logisticDbContext.SaveChangesAsync(cancellationToken);
         
-        var processedProduct = _mapper.Map<Product>(productEntity);
+        var processedProduct = _mapper.Map<Product>(result.Entity);
         
         return processedProduct;
     }

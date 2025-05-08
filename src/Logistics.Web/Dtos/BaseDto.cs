@@ -1,9 +1,9 @@
 namespace Logistics.Web.Dtos;
 
 /// <summary>
-/// Базовый класс
+/// Базовый транспортный класс
 /// </summary>
-public class BaseDto
+public abstract class BaseDto
 {
     /// <summary>
     /// Id класса в БД

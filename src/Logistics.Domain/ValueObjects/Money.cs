@@ -16,7 +16,7 @@ public sealed class Money : IEquatable<Money>
     public decimal Sum
     {
         get => _sum;
-        set => _sum = Math.Round(value, DecimalPlaces);
+        private init => _sum = Math.Round(value, DecimalPlaces);
     }
 
     public Currency Currency { get; private init; }

@@ -3,7 +3,7 @@ namespace Logistics.Infrastructure.DatabaseEntity;
 /// <summary>
 /// Базовый класс
 /// </summary>
-public class BaseEntity
+public abstract class BaseDatabaseEntity
 {
     /// <summary>
     /// Id класса в БД

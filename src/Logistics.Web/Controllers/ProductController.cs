@@ -13,10 +13,10 @@ namespace Logistics.Web.Controllers;
 [ApiController]
 public class ProductController : ControllerBase
 {
-    private readonly IProductService _productService;
+    private readonly IService<Product> _productService;
     private readonly IMapper _mapper;
 
-    public ProductController(IProductService productService, IMapper mapper)
+    public ProductController(IService<Product> productService, IMapper mapper)
     {
         _productService = productService;
         _mapper = mapper;
@@ -30,7 +30,7 @@ public class ProductController : ControllerBase
     [HttpGet("getall")]
     public async Task<IActionResult> GetAllProductsAsync(CancellationToken cancellationToken)
     {
-        var products = await _productService.GetAllProductsAsync(cancellationToken);
+        var products = await _productService.GetAllAsync(cancellationToken);
         var productsDto = _mapper.Map<IReadOnlyList<ProductDto>>(products);
         
         return Ok(productsDto);
@@ -45,7 +45,7 @@ public class ProductController : ControllerBase
     [HttpGet("getbyid/{id:int}")]
     public async Task<IActionResult> GetProductByIdAsync(int id, CancellationToken cancellationToken)
     {
-        var product = await _productService.GetProductByIdAsync(id, cancellationToken);
+        var product = await _productService.GetByIdAsync(id, cancellationToken);
         
         var productDto = _mapper.Map<ProductDto>(product);
         
@@ -89,7 +89,7 @@ public class ProductController : ControllerBase
     [HttpDelete("delete/{id:int}")]
     public async Task<IActionResult> DeleteProductAsync(int id, CancellationToken cancellationToken)
     {
-        var result = await _productService.DeleteProductAsync(id, cancellationToken);
+        var result = await _productService.DeleteAsync(id, cancellationToken);
         
         return Ok(result);
     }
@@ -103,7 +103,7 @@ public class ProductController : ControllerBase
     private async Task<ProductDto> AddOrUpdateAsync(ProductDto productDto, CancellationToken cancellationToken)
     {
         var product = _mapper.Map<Product>(productDto);
-        var processedProduct = await _productService.AddOrUpdateProductAsync(product, cancellationToken);
+        var processedProduct = await _productService.AddOrUpdateAsync(product, cancellationToken);
         return _mapper.Map<ProductDto>(processedProduct);
     }
 }

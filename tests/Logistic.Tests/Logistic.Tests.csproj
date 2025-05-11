@@ -11,6 +11,8 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.4" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="NUnit" Version="4.2.2" />
     <PackageReference Include="NUnit.Analyzers" Version="4.4.0" />
@@ -22,7 +24,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Logistics.Application\Logistics.Application.csproj" />
     <ProjectReference Include="..\..\src\Logistics.Domain\Logistics.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Logistics.Infrastructure\Logistics.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Logistics.Web\Logistics.Web.csproj" />
   </ItemGroup>
 
 </Project>

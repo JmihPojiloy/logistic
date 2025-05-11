@@ -1,9 +1,11 @@
 using Logistics.Application.Interfaces.Initializations;
 using Logistics.Application.Interfaces.Repositories;
+using Logistics.Application.Interfaces.UnitOfWork;
 using Logistics.Infrastructure.Database;
 using Logistics.Infrastructure.Initializations;
 using Logistics.Infrastructure.Mapper;
 using Logistics.Infrastructure.Repositories;
+using Logistics.Infrastructure.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,8 +23,8 @@ public static class DependencyInjection
 
         services.AddDbContext<LogisticDbContext>(options => options.UseNpgsql(connectionString));
         services.AddAutoMapper(typeof(LogisticEntitiesMappingProfile));
-        services.AddScoped<IProductRepository, ProductRepository>();
-        services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+        services.AddScoped<IRepositoryFactory, RepositoryFactory>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IDatabaseInitializer, DatabaseInitializer>();
         
         return services;

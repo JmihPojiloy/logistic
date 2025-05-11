@@ -13,10 +13,10 @@ namespace Logistics.Web.Controllers;
 [ApiController]
 public class WarehouseController : ControllerBase
 {
-    private readonly IWarehouseService _service;
+    private readonly IService<Warehouse> _service;
     private readonly IMapper _mapper;
 
-    public WarehouseController(IWarehouseService service, IMapper mapper)
+    public WarehouseController(IService<Warehouse> service, IMapper mapper)
     {
         _service = service;
         _mapper = mapper;
@@ -30,7 +30,7 @@ public class WarehouseController : ControllerBase
     [HttpGet("getall")]
     public async Task<IActionResult> GetAllWarehousesAsync(CancellationToken cancellationToken)
     {
-        var warehouses = await _service.GetAllWarehousesAsync(cancellationToken);
+        var warehouses = await _service.GetAllAsync(cancellationToken);
         var warehouseDtos = _mapper.Map<IEnumerable<WarehouseDto>>(warehouses);
         
         return Ok(warehouseDtos);
@@ -45,7 +45,7 @@ public class WarehouseController : ControllerBase
     [HttpGet("getbyid/{id:int}")]
     public async Task<IActionResult> GetWarehouseByIdAsync(int id, CancellationToken cancellationToken)
     {
-        var warehouse = await _service.GetWarehouseByIdAsync(id, cancellationToken);
+        var warehouse = await _service.GetByIdAsync(id, cancellationToken);
         var warehouseDto = _mapper.Map<WarehouseDto>(warehouse);
         
         return Ok(warehouseDto);
@@ -88,7 +88,7 @@ public class WarehouseController : ControllerBase
     [HttpDelete("delete/{id:int}")]
     public async Task<IActionResult> DeleteWarehouseAsync(int id, CancellationToken cancellationToken)
     {
-        var warehouse = await _service.DeleteWarehouseAsync(id, cancellationToken);
+        var warehouse = await _service.DeleteAsync(id, cancellationToken);
         
         return Ok(warehouse);
     }
@@ -102,7 +102,7 @@ public class WarehouseController : ControllerBase
     private async Task<WarehouseDto> AddOrUpdateAsync(WarehouseDto warehouseDto, CancellationToken cancellationToken)
     {
         var warehouse = _mapper.Map<Warehouse>(warehouseDto);
-        var processedWarehouse = await _service.AddOrUpdateWarehouseAsync(warehouse, cancellationToken);
+        var processedWarehouse = await _service.AddOrUpdateAsync(warehouse, cancellationToken);
         return _mapper.Map<WarehouseDto>(processedWarehouse);
     }
 }

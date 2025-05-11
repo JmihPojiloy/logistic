@@ -7,12 +7,12 @@ using Logistics.Infrastructure.DatabaseEntity.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Logistics.Infrastructure.Repositories;
+namespace Logistics.Infrastructure.Repositories.Products;
 
 /// <summary>
 /// Класс репозитория доступа к БД для товаров
 /// </summary>
-public class ProductRepository : IProductRepository
+public class ProductRepository : IRepository<Product>
 {
     private readonly LogisticDbContext _logisticDbContext;
     private readonly IMapper _mapper;
@@ -28,17 +28,15 @@ public class ProductRepository : IProductRepository
     /// </summary>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Неизменяемая коллекция записей товаров</returns>
-    public async Task<IReadOnlyList<Product>> GetAllProductsAsync(CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<Product>> GetAllAsync(CancellationToken cancellationToken)
     {
         var productsEntities = await _logisticDbContext.Products
             .AsNoTracking()
             .Include(p => p.Inventories)
                 .ThenInclude(i => i.Warehouse)
-                .ToListAsync(cancellationToken: cancellationToken);
+            .ToListAsync(cancellationToken: cancellationToken);
         
-        var products = _mapper.Map<IReadOnlyList<Product>>(productsEntities);
-        
-        return products;
+        return _mapper.Map<IReadOnlyList<Product>>(productsEntities);
     }
 
     /// <summary>
@@ -47,17 +45,16 @@ public class ProductRepository : IProductRepository
     /// <param name="productId">Id товара</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Сущность товара</returns>
-    public async Task<Product> GetProductByIdAsync(int productId, CancellationToken cancellationToken)
+    public async Task<Product> GetByIdAsync(int productId, CancellationToken cancellationToken)
     {
         var productEntity = await _logisticDbContext.Products
             .AsNoTracking()
             .Include(p => p.Inventories)
-            .ThenInclude(i => i.Warehouse)
+                .ThenInclude(i => i.Warehouse)
             .FirstOrDefaultAsync(p => p.Id == productId, cancellationToken: cancellationToken);
         if (productEntity == null) throw new NotFoundException("Product", productId);
-        var product = _mapper.Map<Product>(productEntity);
         
-        return product;
+        return _mapper.Map<Product>(productEntity);
     }
 
     /// <summary>
@@ -66,7 +63,7 @@ public class ProductRepository : IProductRepository
     /// <param name="product">Товар</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Обновленный или добавленный товар</returns>
-    public async Task<Product> AddOrUpdateProductAsync(Product product, CancellationToken cancellationToken)
+    public async Task<Product> AddOrUpdateAsync(Product product, CancellationToken cancellationToken)
     {
         var productEntity = _mapper.Map<ProductEntity>(product);
         EntityEntry<ProductEntity> result;
@@ -81,12 +78,8 @@ public class ProductRepository : IProductRepository
         {
             result = _logisticDbContext.Products.Update(productEntity);
         }
-
-        await _logisticDbContext.SaveChangesAsync(cancellationToken);
         
-        var processedProduct = _mapper.Map<Product>(result.Entity);
-        
-        return processedProduct;
+        return _mapper.Map<Product>(result.Entity);
     }
 
     /// <summary>
@@ -95,17 +88,13 @@ public class ProductRepository : IProductRepository
     /// <param name="productId">Id товара</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Id удаленного товара в случае успеха, либо ошибку NotFound</returns>
-    public async Task<int> DeleteProductAsync(int productId, CancellationToken cancellationToken)
+    public async Task<int> DeleteAsync(int productId, CancellationToken cancellationToken)
     {
         var deletedProduct = await _logisticDbContext.Products
             .FirstOrDefaultAsync(p => p.Id == productId, cancellationToken: cancellationToken);
-        
         if (deletedProduct == null) throw new NotFoundException("Product", productId);
-        
         _logisticDbContext.Products.Remove(deletedProduct);
-        await _logisticDbContext.SaveChangesAsync(cancellationToken);
         
         return deletedProduct.Id;
-
     }
 }

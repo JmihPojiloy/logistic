@@ -1,16 +1,15 @@
 using AutoMapper;
 using Logistics.Application.Exceptions;
 using Logistics.Application.Interfaces.Repositories;
-using Logistics.Domain.Entities.Products;
 using Logistics.Domain.Entities.Warehouses;
 using Logistics.Infrastructure.Database;
 using Logistics.Infrastructure.DatabaseEntity.Warehouses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Logistics.Infrastructure.Repositories;
+namespace Logistics.Infrastructure.Repositories.Warehouses;
 
-public class WarehouseRepository : IWarehouseRepository
+public class WarehouseRepository : IRepository<Warehouse>
 {
     private readonly LogisticDbContext _context;
     private readonly IMapper _mapper;
@@ -26,16 +25,16 @@ public class WarehouseRepository : IWarehouseRepository
     /// </summary>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Неизменяемый список складов</returns>
-    public async Task<IReadOnlyList<Warehouse>> GetAllWarehousesAsync(CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<Warehouse>> GetAllAsync(CancellationToken cancellationToken)
     {
         var warehouseEntities = await _context.Warehouses
             .AsNoTracking()
             .Include(w => w.Inventories)
-            .ThenInclude(i => i.Product)
+                .ThenInclude(i => i.Product)
             .Include(w => w.Address)
             .ToListAsync(cancellationToken: cancellationToken);
         
-        return _mapper.Map<List<Warehouse>>(warehouseEntities);
+        return _mapper.Map<IReadOnlyList<Warehouse>>(warehouseEntities);
     }
 
     /// <summary>
@@ -45,12 +44,12 @@ public class WarehouseRepository : IWarehouseRepository
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Склад</returns>
     /// <exception cref="NotFoundException">Ошибка в случае не найденной записи</exception>
-    public async Task<Warehouse> GetWarehouseByIdAsync(int warehouseId, CancellationToken cancellationToken)
+    public async Task<Warehouse> GetByIdAsync(int warehouseId, CancellationToken cancellationToken)
     {
         var warehouseEntity = await _context.Warehouses
             .AsNoTracking()
             .Include(w => w.Inventories)
-            .ThenInclude(i => i.Product)
+                .ThenInclude(i => i.Product)
             .Include(w => w.Address)
             .FirstOrDefaultAsync(w => w.Id == warehouseId, cancellationToken);
         if(warehouseEntity == null) throw new NotFoundException("Warehouse", warehouseId);
@@ -64,7 +63,7 @@ public class WarehouseRepository : IWarehouseRepository
     /// <param name="warehouse">Склад</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Добавленный или обновленный склад</returns>
-    public async Task<Warehouse> AddOrUpdateWarehouseAsync(Warehouse warehouse, CancellationToken cancellationToken)
+    public async Task<Warehouse> AddOrUpdateAsync(Warehouse warehouse, CancellationToken cancellationToken)
     {
         var warehouseEntity = _mapper.Map<WarehouseEntity>(warehouse);
         EntityEntry<WarehouseEntity> result;
@@ -79,8 +78,6 @@ public class WarehouseRepository : IWarehouseRepository
         {
             result = _context.Warehouses.Update(warehouseEntity);
         }
-
-        await _context.SaveChangesAsync(cancellationToken);
         
         return _mapper.Map<Warehouse>(result.Entity);
     }
@@ -92,13 +89,12 @@ public class WarehouseRepository : IWarehouseRepository
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Id удаленной записи</returns>
     /// <exception cref="NotFoundException">Ошибка в случае не найденной записи</exception>
-    public async Task<int> DeleteWarehouseAsync(int warehouseId, CancellationToken cancellationToken)
+    public async Task<int> DeleteAsync(int warehouseId, CancellationToken cancellationToken)
     {
         var warehouseEntity = await _context.Warehouses
             .FirstOrDefaultAsync(w => w.Id == warehouseId, cancellationToken: cancellationToken);
         if (warehouseEntity == null) throw new NotFoundException("Warehouse", warehouseId);
         _context.Warehouses.Remove(warehouseEntity);
-        await _context.SaveChangesAsync(cancellationToken);
         
         return warehouseEntity.Id;
     }

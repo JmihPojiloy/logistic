@@ -24,6 +24,8 @@ builder.Services.AddAutoMapper(typeof(LogisticDtoMappingProfile));
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 
+builder.Services.AddLogging();
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();

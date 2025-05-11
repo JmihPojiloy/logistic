@@ -4,11 +4,11 @@ using Logistics.Domain.Entities.Warehouses;
 
 namespace Logistics.Application.Services;
 
-public class WarehouseService : IWarehouseService
+public class WarehouseService : IService<Warehouse>
 {
-    public readonly IWarehouseRepository _warehouseRepository;
+    public readonly IService<Warehouse> _warehouseRepository;
 
-    public WarehouseService(IWarehouseRepository warehouseRepository)
+    public WarehouseService(IService<Warehouse> warehouseRepository)
     {
         _warehouseRepository = warehouseRepository;
     }
@@ -18,9 +18,9 @@ public class WarehouseService : IWarehouseService
     /// </summary>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Неизменяемая коллекция складов</returns>
-    public async Task<IReadOnlyList<Warehouse>> GetAllWarehousesAsync(CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<Warehouse>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return await _warehouseRepository.GetAllWarehousesAsync(cancellationToken);
+        return await _warehouseRepository.GetAllAsync(cancellationToken);
     }
 
     /// <summary>
@@ -29,9 +29,9 @@ public class WarehouseService : IWarehouseService
     /// <param name="warehouseId">Id склада</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Склад</returns>
-    public async Task<Warehouse> GetWarehouseByIdAsync(int warehouseId, CancellationToken cancellationToken)
+    public async Task<Warehouse> GetByIdAsync(int warehouseId, CancellationToken cancellationToken)
     {
-        return await _warehouseRepository.GetWarehouseByIdAsync(warehouseId, cancellationToken);
+        return await _warehouseRepository.GetByIdAsync(warehouseId, cancellationToken);
     }
 
     /// <summary>
@@ -40,9 +40,9 @@ public class WarehouseService : IWarehouseService
     /// <param name="warehouse">Склад</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Добавленный или измененный склад</returns>
-    public async Task<Warehouse> AddOrUpdateWarehouseAsync(Warehouse warehouse, CancellationToken cancellationToken)
+    public async Task<Warehouse> AddOrUpdateAsync(Warehouse warehouse, CancellationToken cancellationToken)
     {
-        return await _warehouseRepository.AddOrUpdateWarehouseAsync(warehouse, cancellationToken);
+        return await _warehouseRepository.AddOrUpdateAsync(warehouse, cancellationToken);
     }
 
     /// <summary>
@@ -51,8 +51,8 @@ public class WarehouseService : IWarehouseService
     /// <param name="warehouseId">Id склада</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Id удаленного склада</returns>
-    public async Task<int> DeleteWarehouseAsync(int warehouseId, CancellationToken cancellationToken)
+    public async Task<int> DeleteAsync(int warehouseId, CancellationToken cancellationToken)
     {
-        return await _warehouseRepository.DeleteWarehouseAsync(warehouseId, cancellationToken);
+        return await _warehouseRepository.DeleteAsync(warehouseId, cancellationToken);
     }
 }

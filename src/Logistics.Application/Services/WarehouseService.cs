@@ -1,16 +1,17 @@
 using Logistics.Application.Interfaces.Repositories;
 using Logistics.Application.Interfaces.Services;
+using Logistics.Application.Interfaces.UnitOfWork;
 using Logistics.Domain.Entities.Warehouses;
 
 namespace Logistics.Application.Services;
 
 public class WarehouseService : IService<Warehouse>
 {
-    public readonly IService<Warehouse> _warehouseRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public WarehouseService(IService<Warehouse> warehouseRepository)
+    public WarehouseService(IUnitOfWork unitOfWork)
     {
-        _warehouseRepository = warehouseRepository;
+        _unitOfWork = unitOfWork;
     }
     
     /// <summary>
@@ -20,7 +21,8 @@ public class WarehouseService : IService<Warehouse>
     /// <returns>Неизменяемая коллекция складов</returns>
     public async Task<IReadOnlyList<Warehouse>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return await _warehouseRepository.GetAllAsync(cancellationToken);
+        var repo = _unitOfWork.GetRepository<Warehouse>();
+        return await repo.GetAllAsync(cancellationToken);
     }
 
     /// <summary>
@@ -31,7 +33,8 @@ public class WarehouseService : IService<Warehouse>
     /// <returns>Склад</returns>
     public async Task<Warehouse> GetByIdAsync(int warehouseId, CancellationToken cancellationToken)
     {
-        return await _warehouseRepository.GetByIdAsync(warehouseId, cancellationToken);
+        var repo = _unitOfWork.GetRepository<Warehouse>();
+        return await repo.GetByIdAsync(warehouseId, cancellationToken);
     }
 
     /// <summary>
@@ -42,7 +45,11 @@ public class WarehouseService : IService<Warehouse>
     /// <returns>Добавленный или измененный склад</returns>
     public async Task<Warehouse> AddOrUpdateAsync(Warehouse warehouse, CancellationToken cancellationToken)
     {
-        return await _warehouseRepository.AddOrUpdateAsync(warehouse, cancellationToken);
+        var repo = _unitOfWork.GetRepository<Warehouse>();
+        var result = await repo.AddOrUpdateAsync(warehouse, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        return result;
     }
 
     /// <summary>
@@ -53,6 +60,10 @@ public class WarehouseService : IService<Warehouse>
     /// <returns>Id удаленного склада</returns>
     public async Task<int> DeleteAsync(int warehouseId, CancellationToken cancellationToken)
     {
-        return await _warehouseRepository.DeleteAsync(warehouseId, cancellationToken);
+        var repo = _unitOfWork.GetRepository<Warehouse>();
+        var result =  await repo.DeleteAsync(warehouseId, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        return result;
     }
 }

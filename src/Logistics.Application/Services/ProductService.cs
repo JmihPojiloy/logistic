@@ -1,5 +1,6 @@
 using Logistics.Application.Interfaces.Repositories;
 using Logistics.Application.Interfaces.Services;
+using Logistics.Application.Interfaces.UnitOfWork;
 using Logistics.Domain.Entities.Products;
 
 namespace Logistics.Application.Services;
@@ -9,11 +10,11 @@ namespace Logistics.Application.Services;
 /// </summary>
 public class ProductService : IService<Product>
 {
-    private readonly IRepository<Product> _productRepository;
+    private readonly IUnitOfWork _unitOfWork;
     
-    public ProductService(IRepository<Product> productRepository)
+    public ProductService(IUnitOfWork unitOfWork)
     {
-        _productRepository = productRepository;
+        _unitOfWork = unitOfWork;
     }
     
     /// <summary>
@@ -23,7 +24,8 @@ public class ProductService : IService<Product>
     /// <returns>Неизменяемая коллекция записей товаров</returns>
     public async Task<IReadOnlyList<Product>> GetAllAsync(CancellationToken cancellationToken)
     {
-        var products = await _productRepository.GetAllAsync(cancellationToken);
+        var repo = _unitOfWork.GetRepository<Product>();
+        var products = await repo.GetAllAsync(cancellationToken);
         
         return products;
     }
@@ -36,7 +38,8 @@ public class ProductService : IService<Product>
     /// <returns>Сущность товара</returns>
     public async Task<Product> GetByIdAsync(int productId, CancellationToken cancellationToken)
     {
-        var product = await _productRepository.GetByIdAsync(productId, cancellationToken);
+        var repo = _unitOfWork.GetRepository<Product>();
+        var product = await repo.GetByIdAsync(productId, cancellationToken);
         
         return product;
     }
@@ -49,8 +52,9 @@ public class ProductService : IService<Product>
     /// <returns>Измененный или добавленный товар</returns>
     public async Task<Product> AddOrUpdateAsync(Product product, CancellationToken cancellationToken)
     {
-        var processedProduct = await _productRepository.AddOrUpdateAsync(product, cancellationToken);
-        
+        var repo = _unitOfWork.GetRepository<Product>();
+        var processedProduct = await repo.AddOrUpdateAsync(product, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         return processedProduct;
     }
 
@@ -62,8 +66,9 @@ public class ProductService : IService<Product>
     /// <returns>Id удаленного товара либо ошибка NotFound</returns>
     public async Task<int> DeleteAsync(int productId, CancellationToken cancellationToken)
     {
-        var result = await _productRepository.DeleteAsync(productId, cancellationToken);
-        
+        var repo = _unitOfWork.GetRepository<Product>();
+        var result = await repo.DeleteAsync(productId, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         return result;
     }
 }

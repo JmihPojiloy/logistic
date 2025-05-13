@@ -44,4 +44,26 @@ public class Address : BaseEntity
     /// Долгота
     /// </summary>
     public double? Longitude { get; set; }
+
+    /// <summary>
+    /// Метод возвращает адрес в формате для геокодинга
+    /// </summary>
+    /// <returns>Строка с полным адресом разделенная запятыми</returns>
+    public string GetAddressForGeocoding()
+    {
+        if (string.IsNullOrEmpty(Country) ||
+            string.IsNullOrEmpty(City) ||
+            string.IsNullOrEmpty(Street) ||
+            string.IsNullOrEmpty(HouseNumber))
+        {
+            return string.Empty;
+        }
+
+        var address = new List<string>
+        {
+            Country.Trim(), City.Trim(), Street.Trim(), HouseNumber.Trim()
+        };
+        
+        return string.Join(", ", address);
+    } 
 }

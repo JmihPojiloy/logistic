@@ -1,7 +1,9 @@
+using Logistics.Application.Interfaces.Geo;
 using Logistics.Application.Interfaces.Initializations;
 using Logistics.Application.Interfaces.Repositories;
 using Logistics.Application.Interfaces.UnitOfWork;
 using Logistics.Infrastructure.Database;
+using Logistics.Infrastructure.ExternalServices.Geo;
 using Logistics.Infrastructure.Initializations;
 using Logistics.Infrastructure.Mapper;
 using Logistics.Infrastructure.Repositories;
@@ -26,6 +28,8 @@ public static class DependencyInjection
         services.AddScoped<IRepositoryFactory, RepositoryFactory>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IDatabaseInitializer, DatabaseInitializer>();
+        services.AddScoped<IGeoService, YandexGeoService>();
+        services.AddHttpClient();
         
         return services;
     }

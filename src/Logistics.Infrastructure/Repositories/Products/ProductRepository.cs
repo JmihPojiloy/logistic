@@ -1,5 +1,7 @@
 using AutoMapper;
 using Logistics.Application.Exceptions;
+using Logistics.Application.Filters;
+using Logistics.Application.Interfaces.Filters;
 using Logistics.Application.Interfaces.Repositories;
 using Logistics.Domain.Entities.Products;
 using Logistics.Infrastructure.Database;
@@ -22,15 +24,24 @@ public class ProductRepository : IRepository<Product>
         _logisticDbContext = logisticDbContext;
         _mapper = mapper;
     }
-    
+
     /// <summary>
     /// Метод делает выборку всех записей товаров из БД
     /// </summary>
+    /// <param name="filter">Фильтр записей</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Неизменяемая коллекция записей товаров</returns>
-    public async Task<IReadOnlyList<Product>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<Product>> GetAllByFilterAsync(IFilter? filter, CancellationToken cancellationToken)
     {
-        var productsEntities = await _logisticDbContext.Products
+        var query = _logisticDbContext.Products.AsQueryable();
+        if (filter is ProductFilter productFilter)
+        {
+            if (productFilter.ProductsIds.Any())
+            {
+                query = query.Where(x => productFilter.ProductsIds.Contains(x.Id));
+            }
+        }
+        var productsEntities = await query
             .AsNoTracking()
             .Include(p => p.Inventories)
                 .ThenInclude(i => i.Warehouse)

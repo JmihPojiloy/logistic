@@ -1,5 +1,6 @@
 using AutoMapper;
 using Logistics.Application.Exceptions;
+using Logistics.Application.Interfaces.Filters;
 using Logistics.Application.Interfaces.Repositories;
 using Logistics.Domain.Entities.Warehouses;
 using Logistics.Infrastructure.Database;
@@ -45,9 +46,10 @@ public class InventoryRepository : IRepository<Inventory>
     /// <summary>
     /// Метод получения всех записей из БД
     /// </summary>
+    /// <param name="filter">Фильтр параметров</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Все остатки на складе</returns>
-    public async Task<IReadOnlyList<Inventory>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Inventory>> GetAllByFilterAsync(IFilter? filter = null,CancellationToken cancellationToken = default)
     {
         var entities = await _context.Inventories
             .AsNoTracking()

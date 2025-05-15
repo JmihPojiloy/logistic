@@ -1,5 +1,7 @@
 using AutoMapper;
 using Logistics.Application.Exceptions;
+using Logistics.Application.Filters;
+using Logistics.Application.Interfaces.Filters;
 using Logistics.Application.Interfaces.Repositories;
 using Logistics.Domain.Entities.Vehicles;
 using Logistics.Infrastructure.Database;
@@ -44,11 +46,21 @@ public class DriverRepository : IRepository<Driver>
     /// <summary>
     /// Метод получения всех записей из БД
     /// </summary>
+    /// <param name="filter">Фильтр параметров</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Все водители</returns>
-    public async Task<IReadOnlyList<Driver>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Driver>> GetAllByFilterAsync(IFilter? filter,CancellationToken cancellationToken)
     {
-        var entities = await _context.Drivers
+        var query = _context.Drivers.AsQueryable();
+        
+        if (filter is DriverFilter driverFilter)
+        {
+            if (driverFilter.Status != null)
+            {
+                query = query.Where(d => d.Status == driverFilter.Status);
+            }
+        }
+        var entities = await query
             .AsNoTracking()
             .Include(d => d.Vehicle)
             .ToListAsync(cancellationToken);

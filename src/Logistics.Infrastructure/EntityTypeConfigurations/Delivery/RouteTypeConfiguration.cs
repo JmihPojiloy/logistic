@@ -16,6 +16,16 @@ public class RouteTypeConfiguration : IEntityTypeConfiguration<RouteEntity>
 
         builder.Property(route => route.Distance);
         builder.Property(route => route.LeadTime);
+        builder.OwnsOne(route => route.Cost, costBuilder =>
+        {
+            costBuilder.Property(p => p.Sum)
+                .HasColumnName("CostAmount")
+                .HasPrecision(18, 4);
+
+            costBuilder.Property(p => p.Currency)
+                .HasColumnName("Currency")
+                .HasConversion<int>();
+        });
         
         builder.HasOne(route => route.Vehicle)
             .WithOne(vehicle => vehicle.Route)

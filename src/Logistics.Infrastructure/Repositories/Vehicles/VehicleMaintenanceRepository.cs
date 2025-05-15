@@ -1,5 +1,6 @@
 using AutoMapper;
 using Logistics.Application.Exceptions;
+using Logistics.Application.Interfaces.Filters;
 using Logistics.Application.Interfaces.Repositories;
 using Logistics.Domain.Entities.Vehicles;
 using Logistics.Infrastructure.Database;
@@ -44,9 +45,10 @@ public class VehicleMaintenanceRepository : IRepository<VehicleMaintenance>
     /// <summary>
     /// Метод получения всех записей из БД
     /// </summary>
+    /// <param name="filter">Филтр параметров</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Все ТО</returns>
-    public async Task<IReadOnlyList<VehicleMaintenance>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<VehicleMaintenance>> GetAllByFilterAsync(IFilter? filter = null,CancellationToken cancellationToken = default)
     {
         var entities = await _context.VehicleMaintenances
             .AsNoTracking()

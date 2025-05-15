@@ -1,5 +1,7 @@
 using AutoMapper;
 using Logistics.Application.Exceptions;
+using Logistics.Application.Filters;
+using Logistics.Application.Interfaces.Filters;
 using Logistics.Application.Interfaces.Repositories;
 using Logistics.Domain.Entities.Promotions;
 using Logistics.Infrastructure.Database;
@@ -44,11 +46,26 @@ public class PromotionRepository : IRepository<Promotion>
     /// <summary>
     /// Метод получения всех записей из БД
     /// </summary>
+    /// <param name="filter">Фильтр параметров</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Все акции</returns>
-    public async Task<IReadOnlyList<Promotion>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Promotion>> GetAllByFilterAsync(IFilter? filter = null,CancellationToken cancellationToken = default)
     {
-        var entities = await _context.Promotions
+        var query = _context.Promotions.AsQueryable();
+        if (filter is PromotionsFilter promotionFilter)
+        {
+            if (promotionFilter.PromotionsIds.Any())
+            {
+                query = query.Where(p => promotionFilter.PromotionsIds.Contains(p.Id));
+            }
+
+            if (promotionFilter.EndDate.HasValue)
+            {
+                query = query.Where(p => p.EndDate!.Value > promotionFilter.EndDate.Value);
+            }
+        }
+        
+        var entities = await query
             .AsNoTracking()
             .Include(p => p.OrderPromotions)
             .ToListAsync(cancellationToken);

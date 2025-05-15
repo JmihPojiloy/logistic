@@ -1,5 +1,6 @@
 using AutoMapper;
 using Logistics.Application.Exceptions;
+using Logistics.Application.Interfaces.Filters;
 using Logistics.Application.Interfaces.Repositories;
 using Logistics.Domain.Entities.Delivery;
 using Logistics.Infrastructure.Database;
@@ -44,9 +45,10 @@ public class DeliveryScheduleRepository : IRepository<DeliverySchedule>
     /// <summary>
     /// Метод получения всех записей из БД
     /// </summary>
+    /// <param name="filter">Фильтр параметров</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Все записи график доставки</returns>
-    public async Task<IReadOnlyList<DeliverySchedule>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<DeliverySchedule>> GetAllByFilterAsync(IFilter? filter = null,CancellationToken cancellationToken = default)
     {
         var entities = await _context.DeliverySchedules
             .AsNoTracking()

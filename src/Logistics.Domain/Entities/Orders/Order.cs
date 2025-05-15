@@ -3,6 +3,7 @@ using Logistics.Domain.Entities.Payments;
 using Logistics.Domain.Entities.Users;
 using Logistics.Domain.Entities.Vehicles;
 using Logistics.Domain.Enums;
+using Logistics.Domain.ValueObjects;
 
 namespace Logistics.Domain.Entities.Orders;
 
@@ -40,6 +41,11 @@ public class Order : BaseEntity
     /// Навигационное свойство адреса
     /// </summary>
     public required Address Address { get; set; }
+    
+    /// <summary>
+    /// Стоимость доставки
+    /// </summary>
+    public Money? DeliveryCost { get; set; }
     
     /// <summary>
     /// Навигационное свойство платежа

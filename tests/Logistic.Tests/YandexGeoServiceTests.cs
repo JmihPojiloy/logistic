@@ -60,7 +60,7 @@ public class YandexGeoServiceTests
 
         SetupHttpResponse(jsonResponse);
 
-        var (lat, lon) = await _geoService.GetCoordinates("Dubai");
+        var (lat, lon) = await _geoService.GetCoordinates("Dubai", CancellationToken.None);
 
         Assert.That(lat, Is.EqualTo(55.274243));
         Assert.That(lon, Is.EqualTo(25.1973));
@@ -89,7 +89,7 @@ public class YandexGeoServiceTests
 
         SetupHttpResponse(jsonResponse);
 
-        var ex = Assert.ThrowsAsync<YandexGeoServiceException>(() => _geoService.GetCoordinates("Dubai"));
+        var ex = Assert.ThrowsAsync<YandexGeoServiceException>(() => _geoService.GetCoordinates("Dubai", CancellationToken.None));
         Assert.That(ex!.Message, Does.Contain("Yandex Geocode API failed after multiple retries at address - [Dubai]."));
     }
 
@@ -103,7 +103,7 @@ public class YandexGeoServiceTests
                 ItExpr.IsAny<CancellationToken>())
             .ThrowsAsync(new HttpRequestException("Simulated failure"));
 
-        var ex = Assert.ThrowsAsync<YandexGeoServiceException>(() => _geoService.GetCoordinates("Dubai"));
+        var ex = Assert.ThrowsAsync<YandexGeoServiceException>(() => _geoService.GetCoordinates("Dubai", CancellationToken.None));
         Assert.That(ex!.Message, Does.Contain("failed after multiple retries"));
     }
 

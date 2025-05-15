@@ -1,5 +1,6 @@
 using AutoMapper;
 using Logistics.Application.Exceptions;
+using Logistics.Application.Interfaces.Filters;
 using Logistics.Application.Interfaces.Repositories;
 using Logistics.Domain.Entities.Delivery;
 using Logistics.Infrastructure.Database;
@@ -44,9 +45,10 @@ public class DeliveryTrackingRepository : IRepository<DeliveryTracking>
     /// <summary>
     /// Метод получения всех записей из БД
     /// </summary>
+    /// <param name="filter">Фильтр параметров</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns></returns>
-    public async Task<IReadOnlyList<DeliveryTracking>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<DeliveryTracking>> GetAllByFilterAsync(IFilter? filter = null,CancellationToken cancellationToken = default)
     {
         var entities = await _context.DeliveryTrackings
             .AsNoTracking()

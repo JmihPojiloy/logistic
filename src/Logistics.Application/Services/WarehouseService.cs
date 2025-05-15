@@ -5,7 +5,7 @@ using Logistics.Domain.Entities.Warehouses;
 
 namespace Logistics.Application.Services;
 
-public class WarehouseService : IService<Warehouse>
+public class WarehouseService : IWarehouseService
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -22,7 +22,7 @@ public class WarehouseService : IService<Warehouse>
     public async Task<IReadOnlyList<Warehouse>> GetAllAsync(CancellationToken cancellationToken)
     {
         var repo = _unitOfWork.GetRepository<Warehouse>();
-        return await repo.GetAllAsync(cancellationToken);
+        return await repo.GetAllByFilterAsync(null, cancellationToken);
     }
 
     /// <summary>

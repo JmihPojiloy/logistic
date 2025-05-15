@@ -1,5 +1,6 @@
 using AutoMapper;
 using Logistics.Application.Exceptions;
+using Logistics.Application.Interfaces.Filters;
 using Logistics.Application.Interfaces.Repositories;
 using Logistics.Domain.Entities.Warehouses;
 using Logistics.Infrastructure.Database;
@@ -19,13 +20,14 @@ public class WarehouseRepository : IRepository<Warehouse>
         _context = context;
         _mapper = mapper;
     }
-    
+
     /// <summary>
     /// Метод получения все записей складов из БД
     /// </summary>
+    /// <param name="filter">Фильтр параметров</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Неизменяемый список складов</returns>
-    public async Task<IReadOnlyList<Warehouse>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<Warehouse>> GetAllByFilterAsync(IFilter? filter = null,CancellationToken cancellationToken = default)
     {
         var warehouseEntities = await _context.Warehouses
             .AsNoTracking()

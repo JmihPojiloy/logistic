@@ -1,5 +1,6 @@
 using AutoMapper;
 using Logistics.Application.Exceptions;
+using Logistics.Application.Interfaces.Filters;
 using Logistics.Application.Interfaces.Repositories;
 using Logistics.Domain.Entities.Orders;
 using Logistics.Infrastructure.Database;
@@ -49,9 +50,10 @@ public class OrderRepository : IOrderRepository
     /// <summary>
     /// Метод получения всех записей из БД
     /// </summary>
+    /// <param name="filter">Фильтр параметров</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Все заказы</returns>
-    public async Task<IReadOnlyList<Order>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Order>> GetAllByFilterAsync(IFilter? filter = null,CancellationToken cancellationToken = default)
     {
         var entities = await _context.Orders
             .AsNoTracking()

@@ -5,5 +5,5 @@ namespace Logistics.Application.Interfaces.Geo;
 /// </summary>
 public interface IGeoService
 {
-    public Task<(double lat, double lon)> GetCoordinates(string address);
+    public Task<(double lat, double lon)> GetCoordinates(string address, CancellationToken cancellationToken);
 }

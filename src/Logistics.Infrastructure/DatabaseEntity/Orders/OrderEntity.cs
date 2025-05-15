@@ -1,4 +1,5 @@
 using Logistics.Domain.Enums;
+using Logistics.Domain.ValueObjects;
 using Logistics.Infrastructure.DatabaseEntity.Addresses;
 using Logistics.Infrastructure.DatabaseEntity.Payments;
 using Logistics.Infrastructure.DatabaseEntity.Users;
@@ -40,6 +41,11 @@ public class OrderEntity : BaseDatabaseEntity
     /// Навигационное свойство адреса
     /// </summary>
     public required AddressEntity Address { get; set; }
+    
+    /// <summary>
+    /// Стоимость доставки
+    /// </summary>
+    public Money? DeliveryCost { get; set; }
     
     /// <summary>
     /// Навигационное свойство платежа

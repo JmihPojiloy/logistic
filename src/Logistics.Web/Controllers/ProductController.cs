@@ -13,10 +13,10 @@ namespace Logistics.Web.Controllers;
 [ApiController]
 public class ProductController : ControllerBase
 {
-    private readonly IService<Product> _productService;
+    private readonly IProductService _productService;
     private readonly IMapper _mapper;
 
-    public ProductController(IService<Product> productService, IMapper mapper)
+    public ProductController(IProductService productService, IMapper mapper)
     {
         _productService = productService;
         _mapper = mapper;

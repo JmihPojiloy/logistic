@@ -8,7 +8,7 @@ namespace Logistics.Application.Services;
 /// <summary>
 /// Сервисный класс для работы с товаром
 /// </summary>
-public class ProductService : IService<Product>
+public class ProductService : IProductService
 {
     private readonly IUnitOfWork _unitOfWork;
     
@@ -25,7 +25,7 @@ public class ProductService : IService<Product>
     public async Task<IReadOnlyList<Product>> GetAllAsync(CancellationToken cancellationToken)
     {
         var repo = _unitOfWork.GetRepository<Product>();
-        var products = await repo.GetAllAsync(cancellationToken);
+        var products = await repo.GetAllByFilterAsync(null, cancellationToken);
         
         return products;
     }

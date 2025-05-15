@@ -26,14 +26,15 @@ public class YandexGeoService : IGeoService
         _configuration = configuration;
         _logger = logger;
     }
-    
+
     /// <summary>
     /// Метод получения координат по адресу, использует три попытки подключения
     /// </summary>
     /// <param name="address">Адрес в формате [страна, город, улица, дом]</param>
+    /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Широта и долгота</returns>
     /// <exception cref="YandexGeoServiceException">Ошибка геосервиса</exception>
-    public async Task<(double lat, double lon)> GetCoordinates(string address)
+    public async Task<(double lat, double lon)> GetCoordinates(string address, CancellationToken cancellationToken)
     {
         var token = _configuration["YandexToken"];
         var url = $"{BaseUrl}?apikey={token}&geocode={address}&format=json";
@@ -44,10 +45,10 @@ public class YandexGeoService : IGeoService
         {
             try
             {
-                var response = await _httpClient.GetAsync(url);
+                var response = await _httpClient.GetAsync(url, cancellationToken);
                 response.EnsureSuccessStatusCode();
 
-                var content = await response.Content.ReadAsStringAsync();
+                var content = await response.Content.ReadAsStringAsync(cancellationToken);
                 var data = JsonConvert.DeserializeObject<YandexGeoPosDto>(content);
 
                 var pos = data?
@@ -72,7 +73,7 @@ public class YandexGeoService : IGeoService
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "GeoService failed to fetch coordinates. Attempt {Attempt}/3", i + 1);
-                await Task.Delay(500);   
+                await Task.Delay(500, cancellationToken);   
             }
         }
         

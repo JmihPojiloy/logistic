@@ -1,5 +1,6 @@
 using AutoMapper;
 using Logistics.Application.Exceptions;
+using Logistics.Application.Interfaces.Filters;
 using Logistics.Application.Interfaces.Repositories;
 using Logistics.Domain.Entities.Addresses;
 using Logistics.Infrastructure.Database;
@@ -44,9 +45,10 @@ public class AddressRepository : IRepository<Address>
     /// <summary>
     /// Метод получения всех адресов из БД
     /// </summary>
+    /// <param name="filter">Фильтр параметров</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Все записи адресов</returns>
-    public async Task<IReadOnlyList<Address>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<Address>> GetAllByFilterAsync(IFilter? filter = null,CancellationToken cancellationToken = default)
     {
         var addresses = await _context.Addresses
             .AsNoTracking()

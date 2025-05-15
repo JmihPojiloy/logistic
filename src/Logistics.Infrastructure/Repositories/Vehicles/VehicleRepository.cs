@@ -1,7 +1,10 @@
 using AutoMapper;
 using Logistics.Application.Exceptions;
+using Logistics.Application.Filters;
+using Logistics.Application.Interfaces.Filters;
 using Logistics.Application.Interfaces.Repositories;
 using Logistics.Domain.Entities.Vehicles;
+using Logistics.Domain.Enums;
 using Logistics.Infrastructure.Database;
 using Logistics.Infrastructure.DatabaseEntity.Vehicles;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +33,7 @@ public class VehicleRepository : IRepository<Vehicle>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Транспорт</returns>
     /// <exception cref="NotFoundException">Ошибка не найденной записи</exception>
-    public async Task<Vehicle> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<Vehicle> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var entity = await _context.Vehicles
             .AsNoTracking()
@@ -48,11 +51,22 @@ public class VehicleRepository : IRepository<Vehicle>
     /// <summary>
     /// Метод получения всех записей из БД
     /// </summary>
+    /// <param name="filter">Фильтр параметров</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Все транспорты</returns>
-    public async Task<IReadOnlyList<Vehicle>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Vehicle>> GetAllByFilterAsync(IFilter? filter,CancellationToken cancellationToken)
     {
-        var entities = await _context.Vehicles
+        var query = _context.Vehicles.AsQueryable();
+
+        if (filter is VehicleFilter vehicleFilter)
+        {
+            if (vehicleFilter.Status != null)
+            {
+                query = query.Where(x => x.Status == vehicleFilter.Status);
+            }    
+        }
+        
+        var entities = await query
             .AsNoTracking()
             .Include(x => x.Driver)
             .Include(x => x.DeliveryTracking)

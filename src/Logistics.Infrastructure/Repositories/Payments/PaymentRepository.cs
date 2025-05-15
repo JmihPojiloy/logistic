@@ -1,5 +1,6 @@
 using AutoMapper;
 using Logistics.Application.Exceptions;
+using Logistics.Application.Interfaces.Filters;
 using Logistics.Application.Interfaces.Repositories;
 using Logistics.Domain.Entities.Payments;
 using Logistics.Infrastructure.Database;
@@ -45,9 +46,10 @@ public class PaymentRepository : IRepository<Payment>
     /// <summary>
     /// Метод получения всех записей из БД
     /// </summary>
+    /// <param name="filter">Фильтр параметров</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Все платежи</returns>
-    public async Task<IReadOnlyList<Payment>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Payment>> GetAllByFilterAsync(IFilter? filter = null,CancellationToken cancellationToken = default)
     {
         var entities = await _context.Payments
             .AsNoTracking()

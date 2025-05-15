@@ -14,6 +14,16 @@ public class OrderTypeConfiguration : IEntityTypeConfiguration<OrderEntity>
         builder.HasKey(order => order.Id);
         
         builder.Property(order => order.Status).HasConversion<int>();
+        builder.OwnsOne(order => order.DeliveryCost, costBuilder =>
+        {
+            costBuilder.Property(p => p.Sum)
+                .HasColumnName("CostAmount")
+                .HasPrecision(18, 4);
+
+            costBuilder.Property(p => p.Currency)
+                .HasColumnName("Currency")
+                .HasConversion<int>();
+        });
         
         builder.HasOne(order => order.User)
             .WithMany(user => user.Orders)

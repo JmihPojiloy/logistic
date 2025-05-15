@@ -1,3 +1,4 @@
+using Logistics.Application.Interfaces.Filters;
 using Logistics.Application.Interfaces.Repositories;
 using Logistics.Domain.Entities;
 using Microsoft.Extensions.Logging;
@@ -25,10 +26,10 @@ public class LoggingRepositoryDecorator<T> : IRepository<T> where T : BaseEntity
         return await _inner.GetByIdAsync(id, cancellationToken);
     }
 
-    public async Task<IReadOnlyList<T>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<T>> GetAllByFilterAsync(IFilter? filter = null,CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Getting all {Entity}", typeof(T).Name);
-        return await _inner.GetAllAsync(cancellationToken);
+        return await _inner.GetAllByFilterAsync(filter, cancellationToken);
     }
 
     public async Task<T> AddOrUpdateAsync(T entity, CancellationToken cancellationToken)

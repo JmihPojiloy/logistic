@@ -1,3 +1,4 @@
+using Logistics.Application.Interfaces.Payments;
 using Logistics.Application.Interfaces.Services;
 using Logistics.Application.Services;
 using Logistics.Domain.Entities.Products;
@@ -10,8 +11,10 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddScoped<IService<Product>, ProductService>();
-        services.AddScoped<IService<Warehouse>, WarehouseService>();
+        services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IWarehouseService, WarehouseService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IOrderService, OrderService>();
         return services;
     }
 }

@@ -1,9 +1,11 @@
 using Logistics.Application.Interfaces.Geo;
 using Logistics.Application.Interfaces.Initializations;
+using Logistics.Application.Interfaces.Payments;
 using Logistics.Application.Interfaces.Repositories;
 using Logistics.Application.Interfaces.UnitOfWork;
 using Logistics.Infrastructure.Database;
 using Logistics.Infrastructure.ExternalServices.Geo;
+using Logistics.Infrastructure.ExternalServices.Payments;
 using Logistics.Infrastructure.Initializations;
 using Logistics.Infrastructure.Mapper;
 using Logistics.Infrastructure.Repositories;
@@ -26,9 +28,10 @@ public static class DependencyInjection
         services.AddDbContext<LogisticDbContext>(options => options.UseNpgsql(connectionString));
         services.AddAutoMapper(typeof(LogisticEntitiesMappingProfile));
         services.AddScoped<IRepositoryFactory, RepositoryFactory>();
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IDatabaseInitializer, DatabaseInitializer>();
         services.AddScoped<IGeoService, YandexGeoService>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IPaymentService, PaymentService>();
         services.AddHttpClient();
         
         return services;

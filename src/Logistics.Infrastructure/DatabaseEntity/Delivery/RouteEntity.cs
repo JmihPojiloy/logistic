@@ -1,3 +1,4 @@
+using Logistics.Domain.ValueObjects;
 using Logistics.Infrastructure.DatabaseEntity.Addresses;
 using Logistics.Infrastructure.DatabaseEntity.Vehicles;
 
@@ -32,6 +33,11 @@ public class RouteEntity : BaseDatabaseEntity
     /// Расстояние
     /// </summary>
     public int? Distance { get; set; }
+    
+    /// <summary>
+    /// Стоимость за километр
+    /// </summary>
+    public Money? Cost { get; set; }
     
     /// <summary>
     /// Время выполнения

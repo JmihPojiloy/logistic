@@ -1,5 +1,6 @@
 using AutoMapper;
 using Logistics.Application.Exceptions;
+using Logistics.Application.Interfaces.Filters;
 using Logistics.Application.Interfaces.Repositories;
 using Logistics.Domain.Entities.Notifications;
 using Logistics.Infrastructure.Database;
@@ -44,9 +45,10 @@ public class LetterRepository : IRepository<Letter>
     /// <summary>
     /// Метод получения всех записей из БД
     /// </summary>
+    /// <param name="filter">Фильтр параметров</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Все письма</returns>
-    public async Task<IReadOnlyList<Letter>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Letter>> GetAllByFilterAsync(IFilter? filter = null,CancellationToken cancellationToken = default)
     {
         var entities = await _context.Letters
             .AsNoTracking()

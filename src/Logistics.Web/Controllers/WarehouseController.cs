@@ -13,10 +13,10 @@ namespace Logistics.Web.Controllers;
 [ApiController]
 public class WarehouseController : ControllerBase
 {
-    private readonly IService<Warehouse> _service;
+    private readonly IWarehouseService _service;
     private readonly IMapper _mapper;
 
-    public WarehouseController(IService<Warehouse> service, IMapper mapper)
+    public WarehouseController(IWarehouseService service, IMapper mapper)
     {
         _service = service;
         _mapper = mapper;

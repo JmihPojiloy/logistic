@@ -14,6 +14,7 @@ using Logistics.Domain.Entities.Promotions;
 using Logistics.Domain.Entities.Vehicles;
 using Logistics.Domain.Entities.Warehouses;
 using Logistics.Domain.Enums;
+using Logistics.Domain.Extensions;
 using Logistics.Domain.ValueObjects;
 
 namespace Logistics.Application.Services;
@@ -207,6 +208,15 @@ public class OrderService : IOrderService
         await CreateTrackingAndSchedule(processedOrder, cancellationToken);
         
         var notificationRepo = _unitOfWork.GetRepository<Notification>();
+
+        var notification = processedOrder.User.Notify()
+            .WithTitle("Заказ успешно оформлен!")
+            .WithText($"Ваш заказ №{processedOrder.Id} оплачен и уже отправлен в доставку.")
+            .WithType(NotificationType.Payment)
+            .Build();
+        
+        await notificationRepo.AddOrUpdateAsync(notification, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         
         return processedOrder;
     }

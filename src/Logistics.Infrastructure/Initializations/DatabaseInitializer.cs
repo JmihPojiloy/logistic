@@ -4,6 +4,7 @@ using Logistics.Domain.ValueObjects;
 using Logistics.Infrastructure.Database;
 using Logistics.Infrastructure.DatabaseEntity.Addresses;
 using Logistics.Infrastructure.DatabaseEntity.Products;
+using Logistics.Infrastructure.DatabaseEntity.Promotions;
 using Logistics.Infrastructure.DatabaseEntity.Vehicles;
 using Logistics.Infrastructure.DatabaseEntity.Warehouses;
 using Microsoft.EntityFrameworkCore;
@@ -46,6 +47,10 @@ public class DatabaseInitializer : IDatabaseInitializer
                 InitVehicles();
             }
 
+            if (!_context.Promotions.Any())
+            {
+                InitPromotions();
+            }
             _context.SaveChanges();
         }
         catch (Exception ex)
@@ -180,5 +185,26 @@ public class DatabaseInitializer : IDatabaseInitializer
 
         _context.Vehicles.Add(vehicle);
         _logger.LogInformation("Initial vehicle data seeded successfully.");
+    }
+
+    /// <summary>
+    /// Метод инициализации промоакций
+    /// </summary>
+    private void InitPromotions()
+    {
+        _logger.LogInformation("No promotions found. Seeding initial data...");
+
+        var promotion = new PromotionEntity
+        {
+            Code = 1,
+            CreatedOn = DateTime.UtcNow,
+            Description = "Test promotion",
+            Discount = 10,
+            StartDate = DateTime.UtcNow - TimeSpan.FromDays(3),
+            EndDate = DateTime.UtcNow + TimeSpan.FromDays(3),
+        };
+        
+        _context.Promotions.Add(promotion);
+        _logger.LogInformation("Initial promotion data seeded successfully.");
     }
 }

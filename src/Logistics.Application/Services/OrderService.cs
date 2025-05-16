@@ -177,8 +177,9 @@ public class OrderService : IOrderService
             };
             
             var promotions = await promotionRepo.GetAllByFilterAsync(promotionFilter, cancellationToken);
+            
             var promotion = promotions.Where(p => p.Discount.HasValue).MaxBy(p => p.Discount!.Value);
-            var discount = promotion!.Discount.HasValue ? promotion.Discount.Value / 100  : 0;
+            var discount = (promotion != null && promotion.Discount.HasValue) ? promotion.Discount.Value / 100  : 0;
             var sum = discount > 0 ? products.Sum(p => p.Price!.Sum) * discount : products.Sum(p => p.Price!.Sum); 
             var productsAmount = new Money(sum, products.FirstOrDefault()!.Price!.Currency);
             if(processedOrder.DeliveryCost == null) throw new OrderException(processedOrder.Id, "Не указана стоимость доставки");

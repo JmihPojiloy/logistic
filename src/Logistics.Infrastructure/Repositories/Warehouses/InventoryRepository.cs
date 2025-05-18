@@ -71,16 +71,23 @@ public class InventoryRepository : IRepository<Inventory>
         EntityEntry<InventoryEntity> result;
         var inventory = _mapper.Map<InventoryEntity>(entity);
 
-        if (inventory.Id == 0)
+        try
         {
-            result = await _context.Inventories.AddAsync(inventory, cancellationToken);
+            if (inventory.Id == 0)
+            {
+                result = await _context.Inventories.AddAsync(inventory, cancellationToken);
+            }
+            else
+            {
+                result = _context.Inventories.Update(inventory);
+            }
+
+            return _mapper.Map<Inventory>(result);
         }
-        else
+        catch (DbUpdateConcurrencyException)
         {
-            result = _context.Inventories.Update(inventory);
+            throw new InventoryException($"Товар ID - {inventory.ProductId} уже продан");
         }
-        
-        return _mapper.Map<Inventory>(result);
     }
 
     /// <summary>

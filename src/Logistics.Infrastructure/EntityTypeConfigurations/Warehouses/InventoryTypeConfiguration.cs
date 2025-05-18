@@ -15,6 +15,12 @@ public class InventoryTypeConfiguration : IEntityTypeConfiguration<InventoryEnti
         
         builder.Property(inventory => inventory.Quantity);
         
+        // shadow property для оптимистической блокировки обновляемого товара
+        builder.Property<uint>("Xmin")
+            .HasColumnName("xmin")
+            .IsRowVersion()
+            .ValueGeneratedOnAddOrUpdate();
+        
         builder.HasOne(inventory => inventory.Product)
             .WithMany(product => product.Inventories)
             .HasForeignKey(inventory => inventory.ProductId)

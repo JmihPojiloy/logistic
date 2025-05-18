@@ -150,21 +150,22 @@ public class OrderService : IOrderService
         };
         
         var products = await productRepo.GetAllByFilterAsync(productFilter, cancellationToken);
-        
+
         try
         {
             await _unitOfWork.BeginTransactionAsync(cancellationToken);
-            
+
             foreach (var product in products)
             {
                 var orderProduct = order.OrderProducts.FirstOrDefault(x => x.ProductId == product.Id);
-                var inventory =  product.Inventories.FirstOrDefault();
+                var inventory = product.Inventories.FirstOrDefault();
                 if (inventory != null && orderProduct != null)
                 {
                     if (inventory.Quantity == 0 || orderProduct.Quantity > inventory.Quantity)
                     {
                         throw new OrderException(order.Id, "Не достаточно товара на складе.");
                     }
+
                     inventory.Quantity -= orderProduct.Quantity;
                     await inventoryRepo.AddOrUpdateAsync(inventory, cancellationToken);
                 }
@@ -175,16 +176,17 @@ public class OrderService : IOrderService
                 PromotionsIds = processedOrder.OrderPromotions.Select(p => p.PromotionId).ToList(),
                 EndDate = DateTime.UtcNow
             };
-            
+
             var promotions = await promotionRepo.GetAllByFilterAsync(promotionFilter, cancellationToken);
-            
+
             var promotion = promotions.Where(p => p.Discount.HasValue).MaxBy(p => p.Discount!.Value);
-            var discount = (promotion != null && promotion.Discount.HasValue) ? promotion.Discount.Value / 100  : 0;
-            var sum = discount > 0 ? products.Sum(p => p.Price!.Sum) * discount : products.Sum(p => p.Price!.Sum); 
+            var discount = (promotion != null && promotion.Discount.HasValue) ? promotion.Discount.Value / 100 : 0;
+            var sum = discount > 0 ? products.Sum(p => p.Price!.Sum) * discount : products.Sum(p => p.Price!.Sum);
             var productsAmount = new Money(sum, products.FirstOrDefault()!.Price!.Currency);
-            if(processedOrder.DeliveryCost == null) throw new OrderException(processedOrder.Id, "Не указана стоимость доставки");
+            if (processedOrder.DeliveryCost == null)
+                throw new OrderException(processedOrder.Id, "Не указана стоимость доставки");
             var paymentAmount = productsAmount + processedOrder.DeliveryCost;
-            
+
             var payment = new Payment
             {
                 OrderId = processedOrder.Id,
@@ -192,12 +194,16 @@ public class OrderService : IOrderService
                 CreatedDate = DateTime.UtcNow,
                 Amount = paymentAmount
             };
-        
+
             payment.ExternalReceiptId = _paymentService.InitPayment(payment);
             payment.PaymentDate = DateTime.UtcNow;
             await paymentRepo.AddOrUpdateAsync(payment, cancellationToken);
-        
+
             await _unitOfWork.CommitAsync(cancellationToken);
+        }
+        catch (InventoryException ex)
+        {
+            throw new OrderException(processedOrder.Id, ex.Message);
         }
         catch (Exception ex)
         {

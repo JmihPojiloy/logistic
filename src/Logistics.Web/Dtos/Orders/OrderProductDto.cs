@@ -13,19 +13,9 @@ public class OrderProductDto : BaseDto
     public int OrderId { get; set; }
     
     /// <summary>
-    /// Навигационное свойство заказа
-    /// </summary>
-    public OrderDto? Order { get; set; }
-    
-    /// <summary>
     /// Id товара
     /// </summary>
     public int ProductId { get; set; }
-    
-    /// <summary>
-    /// Навигационное свойство товара
-    /// </summary>
-    public ProductDto? Product { get; set; }
     
     /// <summary>
     /// Количество товара в заказе

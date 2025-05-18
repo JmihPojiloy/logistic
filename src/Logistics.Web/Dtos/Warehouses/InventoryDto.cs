@@ -13,19 +13,9 @@ public class InventoryDto : BaseDto
     public int ProductId { get; set; }
     
     /// <summary>
-    /// Навигационное свойство товара
-    /// </summary>
-    public required ProductDto Product { get; set; }
-    
-    /// <summary>
     /// Id склада
     /// </summary>
     public int WarehouseId { get; set; }
-    
-    /// <summary>
-    /// Навигационное свойство склада
-    /// </summary>
-    public required WarehouseDto Warehouse { get; set; }
     
     /// <summary>
     /// Количество товара на складе

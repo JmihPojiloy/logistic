@@ -13,17 +13,7 @@ public class OrderPromotionDto : BaseDto
     public int OrderId { get; set; }
     
     /// <summary>
-    /// Навигационное свойство заказа
-    /// </summary>
-    public OrderDto? Order { get; set; }
-    
-    /// <summary>
     /// Id промоакции
     /// </summary>
     public int PromotionId { get; set; }
-    
-    /// <summary>
-    /// Навигационное свойство промоакции
-    /// </summary>
-    public PromotionDto? Promotion { get; set; }
 }

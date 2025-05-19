@@ -50,6 +50,7 @@ public class LogisticDbContext : DbContext
     public DbSet<PromotionEntity> Promotions { get; set; }
     
     public DbSet<UserEntity> Users { get; set; }
+    public DbSet<UserCredentialEntity> UserCredentials { get; set; }
     
     //vehicle
     public DbSet<VehicleEntity> Vehicles { get; set; }
@@ -87,6 +88,7 @@ public class LogisticDbContext : DbContext
         modelBuilder.ApplyConfiguration(new PromotionTypeConfiguration());
         
         modelBuilder.ApplyConfiguration(new UserTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new UserCredentialTypeConfiguration());
 
         modelBuilder.ApplyConfiguration(new DriverTypeConfiguration());
         modelBuilder.ApplyConfiguration(new VehicleTypeConfiguration());

@@ -1,7 +1,9 @@
 using AutoMapper;
 using Logistics.Application.Interfaces.Services;
 using Logistics.Domain.Entities.Orders;
+using Logistics.Domain.Enums;
 using Logistics.Web.Dtos.Orders;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Logistics.Web.Controllers;
@@ -11,6 +13,7 @@ namespace Logistics.Web.Controllers;
 /// </summary>
 [Route("orders")]
 [ApiController]
+[Authorize(Roles = nameof(UserRole.User))]
 public class OrderController : ControllerBase
 {
     private readonly IMapper _mapper;

@@ -1,7 +1,9 @@
 using AutoMapper;
 using Logistics.Application.Interfaces.Services;
 using Logistics.Domain.Entities.Warehouses;
+using Logistics.Domain.Enums;
 using Logistics.Web.Dtos.Warehouses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Logistics.Web.Controllers;
@@ -11,6 +13,7 @@ namespace Logistics.Web.Controllers;
 /// </summary>
 [Route("warehouses")]
 [ApiController]
+[Authorize]
 public class WarehouseController : ControllerBase
 {
     private readonly IWarehouseService _service;
@@ -28,6 +31,7 @@ public class WarehouseController : ControllerBase
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>ОК со списком складов</returns>
     [HttpGet("getall")]
+    [Authorize(Roles = nameof(UserRole.Manager))]
     public async Task<IActionResult> GetAllWarehousesAsync(CancellationToken cancellationToken)
     {
         var warehouses = await _service.GetAllAsync(cancellationToken);
@@ -43,6 +47,7 @@ public class WarehouseController : ControllerBase
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>ОК с записью склада</returns>
     [HttpGet("getbyid/{id:int}")]
+    [Authorize(Roles = nameof(UserRole.Manager))]
     public async Task<IActionResult> GetWarehouseByIdAsync(int id, CancellationToken cancellationToken)
     {
         var warehouse = await _service.GetByIdAsync(id, cancellationToken);
@@ -58,6 +63,7 @@ public class WarehouseController : ControllerBase
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>ОК с добавленным складом</returns>
     [HttpPost("add")]
+    [Authorize(Roles = nameof(UserRole.Admin))]
     public async Task<IActionResult> AddWarehouseAsync([FromBody] WarehouseDto warehouseDto,
         CancellationToken cancellationToken)
     {
@@ -72,6 +78,7 @@ public class WarehouseController : ControllerBase
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>ОК с измененным складом</returns>
     [HttpPut("update")]
+    [Authorize(Roles = nameof(UserRole.Admin))]
     public async Task<IActionResult> UpdateWarehouseAsync([FromBody] WarehouseDto warehouseDto,
         CancellationToken cancellationToken)
     {
@@ -86,6 +93,7 @@ public class WarehouseController : ControllerBase
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>ОК с ID удаленного склада</returns>
     [HttpDelete("delete/{id:int}")]
+    [Authorize(Roles = nameof(UserRole.Admin))]
     public async Task<IActionResult> DeleteWarehouseAsync(int id, CancellationToken cancellationToken)
     {
         var warehouse = await _service.DeleteAsync(id, cancellationToken);

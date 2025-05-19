@@ -51,6 +51,7 @@ public class LogisticEntitiesMappingProfile : Profile
         CreateMap<PromotionEntity, Promotion>().ReverseMap();
         
         CreateMap<UserEntity, User>().ReverseMap();
+        CreateMap<UserCredentialEntity, UserCredential>().ReverseMap();
         
         CreateMap<DriverEntity, Driver>().ReverseMap();
         CreateMap<VehicleEntity, Vehicle>().ReverseMap();

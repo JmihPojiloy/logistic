@@ -1,7 +1,9 @@
 using AutoMapper;
 using Logistics.Application.Interfaces.Services;
 using Logistics.Domain.Entities.Products;
+using Logistics.Domain.Enums;
 using Logistics.Web.Dtos.Products;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Logistics.Web.Controllers;
@@ -11,6 +13,7 @@ namespace Logistics.Web.Controllers;
 /// </summary>
 [Route("products")]
 [ApiController]
+[Authorize]
 public class ProductController : ControllerBase
 {
     private readonly IProductService _productService;
@@ -59,6 +62,7 @@ public class ProductController : ControllerBase
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>OK с добавленным товаром</returns>
     [HttpPost("add")]
+    [Authorize(Roles = nameof(UserRole.Manager))]
     public async Task<IActionResult> AddProductAsync([FromBody]ProductDto productDto, CancellationToken cancellationToken)
     {
         var product = await AddOrUpdateAsync(productDto, cancellationToken);
@@ -73,6 +77,7 @@ public class ProductController : ControllerBase
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>ОК с обновленным товаром</returns>
     [HttpPut("update")]
+    [Authorize(Roles = nameof(UserRole.Manager))]
     public async Task<IActionResult> UpdateProductAsync([FromBody]ProductDto productDto, CancellationToken cancellationToken)
     {
         var product = await AddOrUpdateAsync(productDto, cancellationToken);
@@ -87,6 +92,7 @@ public class ProductController : ControllerBase
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>ОК с Id товара</returns>
     [HttpDelete("delete/{id:int}")]
+    [Authorize(Roles = nameof(UserRole.Manager))]
     public async Task<IActionResult> DeleteProductAsync(int id, CancellationToken cancellationToken)
     {
         var result = await _productService.DeleteAsync(id, cancellationToken);

@@ -51,6 +51,8 @@ public class LogisticDtoMappingProfile : Profile
         CreateMap<PromotionDto, Promotion>().ReverseMap();
         
         CreateMap<UserDto, User>().ReverseMap();
+        CreateMap<RegisterDto, UserCredential>()
+            .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
         
         CreateMap<DriverDto, Driver>().ReverseMap();
         CreateMap<VehicleDto, Vehicle>().ReverseMap();

@@ -1,12 +1,17 @@
 using Logistics.Application.Interfaces.Initializations;
+using Logistics.Application.Interfaces.Services;
+using Logistics.Domain.Entities.Users;
 using Logistics.Domain.Enums;
 using Logistics.Domain.ValueObjects;
 using Logistics.Infrastructure.Database;
 using Logistics.Infrastructure.DatabaseEntity.Addresses;
 using Logistics.Infrastructure.DatabaseEntity.Products;
 using Logistics.Infrastructure.DatabaseEntity.Promotions;
+using Logistics.Infrastructure.DatabaseEntity.Users;
 using Logistics.Infrastructure.DatabaseEntity.Vehicles;
 using Logistics.Infrastructure.DatabaseEntity.Warehouses;
+using Logistics.Infrastructure.Security;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -19,11 +24,13 @@ public class DatabaseInitializer : IDatabaseInitializer
 {
     private readonly LogisticDbContext _context;
     private readonly ILogger<DatabaseInitializer> _logger;
+    private readonly IPasswordService _passwordService;
 
-    public DatabaseInitializer(LogisticDbContext context, ILogger<DatabaseInitializer> logger)
+    public DatabaseInitializer(LogisticDbContext context, ILogger<DatabaseInitializer> logger, IPasswordService passwordService)
     {
         _context = context;
         _logger = logger;
+        _passwordService = passwordService;
     }
 
     /// <summary>
@@ -51,6 +58,9 @@ public class DatabaseInitializer : IDatabaseInitializer
             {
                 InitPromotions();
             }
+
+            InitAdmin();
+            
             _context.SaveChanges();
         }
         catch (Exception ex)
@@ -207,4 +217,43 @@ public class DatabaseInitializer : IDatabaseInitializer
         _context.Promotions.Add(promotion);
         _logger.LogInformation("Initial promotion data seeded successfully.");
     }
+    
+    private void InitAdmin()
+    {
+        _logger.LogInformation("Checking for existing admin...");
+
+        if (_context.UserCredentials.Any(c => c.Role == UserRole.Admin))
+        {
+            _logger.LogInformation("Admin user already exists. Skipping admin seeding.");
+            return;
+        }
+
+        var user = new UserEntity
+        {
+            FirstName = "Admin",
+            LastName = "Admin",
+            CreatedOn = DateTime.UtcNow
+        };
+        _context.Users.Add(user);
+        _context.SaveChanges();
+
+        var admin = _context.Users.FirstOrDefault(u => u.FirstName == "Admin");
+        
+        if(admin == null) throw new NullReferenceException("Admin user not found.");
+        
+        var credential = new UserCredentialEntity
+        {
+            Phone = 1234567890,
+            Role = UserRole.Admin,
+            UserId = admin.Id,
+            User = admin
+            
+        };
+
+        credential.PasswordHash = _passwordService.HashPassword("admin123");
+
+        _context.UserCredentials.Add(credential);
+        _logger.LogInformation("Admin user created successfully.");
+    }
+
 }

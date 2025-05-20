@@ -505,5 +505,95 @@ FodyWeavers.xsd
 
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
+### Vue ###
+# gitignore template for Vue.js projects
+#
+# Recommended template: Node.gitignore
+
+# TODO: where does this rule come from?
+docs/_book
+
+# TODO: where does this rule come from?
+test/
+
+# === Vue + TypeScript/JavaScript ===
+
+# Production build
+/dist/
+build/
+
+# Node dependencies
+/node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local env files
+.env.local
+.env.*.local
+
+# Editor directories and files
+.idea/
+.vscode/
+/*.suo
+*.ntvs_analysis.dat
+*.njsproj
+*.sln
+*.sw?
+
+# System files
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+*.tscache
+*.typescript
+
+# Jest
+/coverage/
+*.lcov
+
+# Cypress
+/cypress/screenshots/
+/cypress/videos/
+/cypress/downloads/
+
+# ESLint and Prettier cache
+.eslintcache
+.prettiercache
+
+# Optional build cache
+.cache/
+.vuepress/dist
+.nuxt/
+.svelte-kit/
+.storybook/
+.hugo/
+
+# Vue-specific temp files
+*.local
+/*.log
+*.bak
+/*.tmp
+*.old
+*.swp
+
+# Vite / Vue CLI cache
+node_modules/.vite
+node_modules/.cache
+.vite
+.vitepress/dist
+
+# Lint-staged cache
+.staged-files
+
+# Mac and Linux file issues
+Icon?
+ehthumbs.db
+Desktop.ini
 
 # End of https://www.toptal.com/developers/gitignore/api/rider,dotnetcore,visualstudio,visualstudiocode

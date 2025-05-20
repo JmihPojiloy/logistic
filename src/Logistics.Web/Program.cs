@@ -48,6 +48,21 @@ builder.Services.AddApplication();
 
 builder.Services.AddLogging();
 
+var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: myAllowSpecificOrigins,
+        policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:8080") // фронтенд адрес
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();  // если используешь куки или авторизацию
+        });
+});
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -69,6 +84,8 @@ if (app.Environment.IsDevelopment())
         options.RoutePrefix = string.Empty;
     });
 }
+
+app.UseCors(myAllowSpecificOrigins);
 
 app.UseHttpsRedirection();
 app.MapControllers();

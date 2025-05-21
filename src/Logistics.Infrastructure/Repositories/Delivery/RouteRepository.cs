@@ -86,7 +86,24 @@ public class RouteRepository : IRouteRepository
     {
         EntityEntry<RouteEntity> result;
         var route = _mapper.Map<RouteEntity>(entity);
+        
+        var local = _context.Routes.Local.FirstOrDefault(r => r.Id == entity.Id);
+        if (local != null)
+        {
+            _context.Entry(local).State = EntityState.Detached;
+        }
+        
+        if (entity.Vehicle != null)
+        {
+            var localVehicle = _context.Vehicles.Local.FirstOrDefault(v => v.Id == entity.Vehicle.Id);
+            if (localVehicle != null)
+            {
+                _context.Entry(localVehicle).State = EntityState.Detached;
+            }
+        }
 
+        route.Address = null;
+        
         if (route.Id == 0)
         {
             result = await _context.Routes.AddAsync(route, cancellationToken);

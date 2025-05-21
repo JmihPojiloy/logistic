@@ -67,6 +67,8 @@ public class DeliveryScheduleRepository : IRepository<DeliverySchedule>
     public async Task<DeliverySchedule> AddOrUpdateAsync(DeliverySchedule entity, CancellationToken cancellationToken)
     {
         var deliverySchedule = _mapper.Map<DeliveryScheduleEntity>(entity);
+        deliverySchedule.Order = null;
+        
         EntityEntry<DeliveryScheduleEntity> result;
 
         if (deliverySchedule.Id == 0)

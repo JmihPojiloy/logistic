@@ -31,6 +31,6 @@ public class VehicleMaintenanceTypeConfiguration : IEntityTypeConfiguration<Vehi
             .HasForeignKey(maintenance => maintenance.VehicleId)
             .OnDelete(DeleteBehavior.Cascade);
         
-        builder.HasIndex(maintenance => maintenance.VehicleId).IsUnique();
+        builder.HasIndex(maintenance => maintenance.VehicleId);
     }
 }

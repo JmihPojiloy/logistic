@@ -1,4 +1,5 @@
 using Logistics.Domain.Enums;
+using Logistics.Domain.ValueObjects;
 using Logistics.Web.Dtos.Addresses;
 using Logistics.Web.Dtos.Payments;
 using Logistics.Web.Dtos.Users;
@@ -19,12 +20,12 @@ public class OrderDto : BaseDto
     /// <summary>
     /// Навигационное свойство
     /// </summary>
-    public required UserDto User { get; set; }
+    public UserDto? User { get; set; }
     
     /// <summary>
     /// Id транспорта, доставляющего заказ
     /// </summary>
-    public int VehicleId { get; set; }
+    public int? VehicleId { get; set; }
     
     /// <summary>
     /// Навигационное свойство транспорта
@@ -45,6 +46,12 @@ public class OrderDto : BaseDto
     /// Навигационное свойство платежа
     /// </summary>
     public PaymentDto? Payment { get; set; }
+    
+        
+    /// <summary>
+    /// Стоимость доставки
+    /// </summary>
+    public Money? DeliveryCost { get; set; }
     
     /// <summary>
     /// Связь с таблицей товаров

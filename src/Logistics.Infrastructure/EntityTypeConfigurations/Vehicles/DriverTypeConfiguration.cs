@@ -27,6 +27,6 @@ public class DriverTypeConfiguration : IEntityTypeConfiguration<DriverEntity>
             .HasForeignKey<DriverEntity>(driver => driver.VehicleId)
             .OnDelete(DeleteBehavior.ClientSetNull);
         
-        builder.HasIndex(driver => driver.VehicleId).IsUnique();
+        builder.HasIndex(driver => driver.VehicleId);
     }
 }

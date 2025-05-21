@@ -78,6 +78,15 @@ public class DriverRepository : IRepository<Driver>
     {
         EntityEntry<DriverEntity> result;
         var driver = _mapper.Map<DriverEntity>(entity);
+        driver.Vehicle = null;
+        
+        var local = _context.Drivers.Local
+            .FirstOrDefault(entry => entry.Id == entity.Id);
+
+        if (local != null)
+        {
+            _context.Entry(local).State = EntityState.Detached;
+        }
 
         if (driver.Id == 0)
         {

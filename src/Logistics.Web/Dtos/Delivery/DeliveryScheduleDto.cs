@@ -15,7 +15,7 @@ public class DeliveryScheduleDto : BaseDto
     /// <summary>
     /// Навигационное свойство заказа
     /// </summary>
-    public required OrderDto Order { get; set; }
+    public OrderDto? Order { get; set; }
     
     /// <summary>
     /// Планируемая дата загрузки

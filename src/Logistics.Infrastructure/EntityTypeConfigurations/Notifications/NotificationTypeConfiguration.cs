@@ -28,6 +28,6 @@ public class NotificationTypeConfiguration : IEntityTypeConfiguration<Notificati
             .HasForeignKey(notification => notification.RecipientId)
             .OnDelete(DeleteBehavior.Cascade);
         
-        builder.HasIndex(notification => notification.RecipientId).IsUnique();
+        builder.HasIndex(notification => notification.RecipientId);
     }
 }

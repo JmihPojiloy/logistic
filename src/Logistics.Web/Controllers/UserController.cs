@@ -44,6 +44,7 @@ public class UserController : ControllerBase
     /// <param name="id">Id пользователя</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>ОК с пользователем</returns>
+    [Authorize(Roles = nameof(UserRole.User))]
     [HttpGet("getbyid/{id:int}")]
     public async Task<IActionResult> GetUserByIdAsync(int id, CancellationToken cancellationToken)
     {
@@ -77,7 +78,17 @@ public class UserController : ControllerBase
     [Authorize(Roles = nameof(UserRole.User))]
     public async Task<IActionResult> UpdateUserAsync(UserDto user, CancellationToken cancellationToken)
     {
+        foreach (var addr in user.Addresses)
+        {
+            Console.WriteLine($"DTO: {addr.Street}, County = {addr.Country}");
+        }
         var userEntity = _mapper.Map<User>(user);
+        
+        foreach (var addr in userEntity.Addresses)
+        {
+            Console.WriteLine($"Entity: {addr.Street}, County = {addr.Country}");
+        }
+        
         var result = await _userService.AddOrUpdateAsync(userEntity, cancellationToken);
         
         return Ok(_mapper.Map<UserDto>(result));

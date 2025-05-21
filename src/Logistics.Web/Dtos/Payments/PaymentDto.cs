@@ -16,7 +16,7 @@ public class PaymentDto : BaseDto
     /// <summary>
     /// Навигационное свойство заказа
     /// </summary>
-    public required OrderDto Order { get; set; }
+    public OrderDto? Order { get; set; }
     
     /// <summary>
     /// Внешний идентификатор чека

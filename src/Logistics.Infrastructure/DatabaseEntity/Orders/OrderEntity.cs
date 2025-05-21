@@ -25,7 +25,7 @@ public class OrderEntity : BaseDatabaseEntity
     /// <summary>
     /// Id транспорта, доставляющего заказ
     /// </summary>
-    public int VehicleId { get; set; }
+    public int? VehicleId { get; set; }
     
     /// <summary>
     /// Навигационное свойство транспорта

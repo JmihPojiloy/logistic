@@ -16,7 +16,7 @@ export const useAuthStore = defineStore('auth', {
             localStorage.setItem('token', this.token);
 
             const payload = JSON.parse(atob(this.token.split('.')[1]));
-            this.userId = payload.sub;
+            this.userId = Number(payload.sub);
 
             return true;
         },

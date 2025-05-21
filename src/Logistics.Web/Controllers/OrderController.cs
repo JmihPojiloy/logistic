@@ -35,7 +35,8 @@ public class OrderController : ControllerBase
     public async Task<IActionResult> AddOrderAsync(OrderDto orderDto, CancellationToken cancellationToken)
     {
         var order = _mapper.Map<Order>(orderDto);
-        var result = await _orderService.AddOrUpdateAsync(order, cancellationToken);
+        var resultOrder = await _orderService.AddOrUpdateAsync(order, cancellationToken);
+        var result = _mapper.Map<OrderDto>(resultOrder);
         
         return Ok(result);
     }

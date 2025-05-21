@@ -2,6 +2,8 @@
   <header class="app-header">
     <nav>
       <button @click="goToProducts">Все товары</button>
+      <button @click="cabinet">Личный кабинет</button>
+      <button @click="cart">Корзина</button>
       <button @click="logout">Выйти</button>
     </nav>
   </header>
@@ -16,6 +18,14 @@ const auth = useAuthStore();
 
 function goToProducts() {
   router.push('/products');
+}
+
+function cabinet() {
+  router.push('/cabinet');
+}
+
+function cart(){
+  router.push('/cart');
 }
 
 function logout() {

@@ -13,7 +13,7 @@ public class AddressDto : BaseDto
     /// <summary>
     /// Страна
     /// </summary>
-    public string? County { get; set; }
+    public string? Country { get; set; }
     
     /// <summary>
     /// Город

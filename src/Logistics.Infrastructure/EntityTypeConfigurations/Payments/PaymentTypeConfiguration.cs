@@ -33,6 +33,6 @@ public class PaymentTypeConfiguration : IEntityTypeConfiguration<PaymentEntity>
             .HasForeignKey<PaymentEntity>(payment => payment.OrderId)
             .OnDelete(DeleteBehavior.Restrict);
         
-        builder.HasIndex(payment => payment.OrderId).IsUnique();
+        builder.HasIndex(payment => payment.OrderId);
     }
 }

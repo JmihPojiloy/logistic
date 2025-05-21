@@ -31,6 +31,6 @@ public class InventoryTypeConfiguration : IEntityTypeConfiguration<InventoryEnti
             .HasForeignKey(inventory => inventory.WarehouseId)
             .OnDelete(DeleteBehavior.Restrict);
         
-        builder.HasIndex(inventory => new {inventory.ProductId, inventory.WarehouseId}).IsUnique();
+        builder.HasIndex(inventory => new {inventory.ProductId, inventory.WarehouseId});
     }
 }

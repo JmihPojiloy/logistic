@@ -16,7 +16,7 @@ public class Payment : BaseEntity
     /// <summary>
     /// Навигационное свойство заказа
     /// </summary>
-    public required Order Order { get; set; }
+    public Order? Order { get; set; }
     
     /// <summary>
     /// Внешний идентификатор чека

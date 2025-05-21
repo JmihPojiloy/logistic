@@ -33,9 +33,10 @@ public class JwtTokenGenerator : IJwtTokenGenerator
 
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, userCredential.Id.ToString()),
-            new Claim(ClaimTypes.Role, userCredential.Role.ToString()),
-            new Claim(ClaimTypes.MobilePhone, userCredential.Phone.ToString())
+            new(JwtRegisteredClaimNames.Sub, userCredential.UserId.ToString()),
+            new(ClaimTypes.NameIdentifier, userCredential.Id.ToString()),
+            new(ClaimTypes.Role, userCredential.Role.ToString()),
+            new(ClaimTypes.MobilePhone, userCredential.Phone.ToString())
         };
         
         if (userCredential.Role == UserRole.Admin)

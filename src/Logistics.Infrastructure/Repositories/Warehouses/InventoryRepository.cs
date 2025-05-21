@@ -68,21 +68,62 @@ public class InventoryRepository : IRepository<Inventory>
     /// <returns>Обновленная или добавленная запись</returns>
     public async Task<Inventory> AddOrUpdateAsync(Inventory entity, CancellationToken cancellationToken = default)
     {
-        EntityEntry<InventoryEntity> result;
         var inventory = _mapper.Map<InventoryEntity>(entity);
 
         try
         {
+            EntityEntry<InventoryEntity> result;
             if (inventory.Id == 0)
             {
+                var existingWarehouse = await _context.Warehouses.FindAsync(inventory.Warehouse.Id, cancellationToken);
+                if (existingWarehouse != null)
+                {
+                    inventory.Warehouse = existingWarehouse;
+                }
+                else
+                {
+                    _context.Entry(inventory.Warehouse).State = EntityState.Added;
+                }
                 result = await _context.Inventories.AddAsync(inventory, cancellationToken);
             }
             else
             {
-                result = _context.Inventories.Update(inventory);
+                // Найдите существующую сущность Inventory с включенным Warehouse
+                var existingInventory = await _context.Inventories
+                    .Include(i => i.Warehouse)
+                    .FirstOrDefaultAsync(i => i.Id == inventory.Id, cancellationToken);
+
+                if (existingInventory != null)
+                {
+                    // Обновляем свойства inventory, кроме Warehouse
+                    _context.Entry(existingInventory).CurrentValues.SetValues(inventory);
+
+                    // Обновляем склад (Warehouse) аккуратно
+                    if (inventory.Warehouse != null)
+                    {
+                        var existingWarehouse = await _context.Warehouses.FindAsync(inventory.Warehouse.Id, cancellationToken);
+                        if (existingWarehouse != null)
+                        {
+                            existingInventory.Warehouse = existingWarehouse;
+                        }
+                        else
+                        {
+                            existingInventory.Warehouse = inventory.Warehouse;
+                            _context.Entry(existingInventory.Warehouse).State = EntityState.Added;
+                        }
+                    }
+
+                    result = _context.Entry(existingInventory);
+                }
+                else
+                {
+                    // Если не нашли, можно добавить новую сущность
+                    result = _context.Inventories.Update(inventory);
+                }
             }
 
-            return _mapper.Map<Inventory>(result);
+
+            return _mapper.Map<Inventory>(result.Entity);
         }
         catch (DbUpdateConcurrencyException)
         {

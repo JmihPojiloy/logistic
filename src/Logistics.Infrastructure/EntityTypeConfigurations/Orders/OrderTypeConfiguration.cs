@@ -40,8 +40,8 @@ public class OrderTypeConfiguration : IEntityTypeConfiguration<OrderEntity>
             .HasForeignKey<OrderEntity>(order => order.AddressId)
             .OnDelete(DeleteBehavior.Cascade);
         
-        builder.HasIndex(order => order.AddressId).IsUnique();
-        builder.HasIndex(order => order.UserId).IsUnique();
-        builder.HasIndex(order => order.VehicleId).IsUnique();
+        builder.HasIndex(order => order.AddressId);
+        builder.HasIndex(order => order.UserId);
+        builder.HasIndex(order => order.VehicleId);
     }
 }

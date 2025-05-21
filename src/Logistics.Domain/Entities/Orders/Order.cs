@@ -20,12 +20,12 @@ public class Order : BaseEntity
     /// <summary>
     /// Навигационное свойство
     /// </summary>
-    public required User User { get; set; }
+    public User? User { get; set; }
     
     /// <summary>
     /// Id транспорта, доставляющего заказ
     /// </summary>
-    public int VehicleId { get; set; }
+    public int? VehicleId { get; set; }
     
     /// <summary>
     /// Навигационное свойство транспорта

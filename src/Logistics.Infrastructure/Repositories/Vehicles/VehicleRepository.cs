@@ -85,19 +85,36 @@ public class VehicleRepository : IRepository<Vehicle>
     /// <returns>Обновленная или добавленная запись</returns>
     public async Task<Vehicle> AddOrUpdateAsync(Vehicle entity, CancellationToken cancellationToken = default)
     {
-        EntityEntry<VehicleEntity> result;
         var vehicle = _mapper.Map<VehicleEntity>(entity);
 
         if (vehicle.Id == 0)
         {
-            result = await _context.Vehicles.AddAsync(vehicle, cancellationToken);
+            if (vehicle.Route?.Address != null)
+            {
+                _context.Entry(vehicle.Route.Address).State = EntityState.Added;
+            }
+            var result = await _context.Vehicles.AddAsync(vehicle, cancellationToken);
+            return _mapper.Map<Vehicle>(result.Entity);
         }
         else
         {
-            result = _context.Vehicles.Update(vehicle);
+            // Проверяем связанные объекты и заменяем на сущности из контекста, если есть
+            if (vehicle.Route?.Address != null && vehicle.Route.Address.Id != 0)
+            {
+                var existingAddress = await _context.Addresses.FindAsync(new object[] { vehicle.Route.Address.Id }, cancellationToken);
+                if (existingAddress != null)
+                {
+                    vehicle.Route.Address = existingAddress;
+                }
+                else
+                {
+                    _context.Entry(vehicle.Route.Address).State = EntityState.Added;
+                }
+            }
+
+            var result = _context.Vehicles.Update(vehicle);
+            return _mapper.Map<Vehicle>(result.Entity);
         }
-        
-        return _mapper.Map<Vehicle>(result.Entity);
     }
 
     /// <summary>

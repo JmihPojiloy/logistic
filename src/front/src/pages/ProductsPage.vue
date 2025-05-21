@@ -16,6 +16,7 @@
           </li>
         </ul>
       </div>
+      <button style="color: white; background-color: #2196f3;" @click="addToCart(product)">Купить</button>
     </div>
   </div>
 </template>
@@ -24,9 +25,11 @@
 import { onMounted, ref } from 'vue';
 import { axiosInstance } from '@/config';
 import { useAuthStore } from '@/store/auth';
+import { useCartStore } from '@/store/cart';
 
 const products = ref([]);
 const auth = useAuthStore();
+const cartStore = useCartStore();
 
 onMounted(async () => {
   const res = await axiosInstance.get('/products/getall', {
@@ -34,6 +37,10 @@ onMounted(async () => {
   });
   products.value = res.data;
 });
+
+function addToCart(product: any) {
+  cartStore.addToCart(product);
+}
 </script>
 
 <style scoped>
@@ -58,5 +65,13 @@ onMounted(async () => {
 
 .product-card li {
   margin-bottom: 4px;
+}
+
+button {
+  padding: 10px 16px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
 }
 </style>

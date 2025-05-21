@@ -107,14 +107,14 @@ public class DatabaseInitializer : IDatabaseInitializer
             Name = "Тестовый склад",
             Address = new AddressEntity
             {
-                Zip = "12345",
-                County = "Тест страна",
-                City = "Тест город",
-                Street = "Тест улица",
-                HouseNumber = "1",
+                Zip = "119017",
+                County = "РФ",
+                City = "Москва",
+                Street = "Лаврушкинский переулок",
+                HouseNumber = "10с4",
                 ApartmentNumber = "2",
-                Latitude = 28.34,
-                Longitude = 33.33,
+                Latitude = 55.74,
+                Longitude = 37.62,
                 CreatedOn = DateTime.UtcNow
             },
             Square = 200,

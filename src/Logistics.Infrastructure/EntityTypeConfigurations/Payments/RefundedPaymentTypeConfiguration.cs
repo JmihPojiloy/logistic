@@ -33,6 +33,6 @@ public class RefundedPaymentTypeConfiguration : IEntityTypeConfiguration<Refunde
             .HasForeignKey(refundedPayment => refundedPayment.PaymentId)
             .OnDelete(DeleteBehavior.Cascade);
         
-        builder.HasIndex(refundedPayment => refundedPayment.PaymentId).IsUnique();
+        builder.HasIndex(refundedPayment => refundedPayment.PaymentId);
     }
 }

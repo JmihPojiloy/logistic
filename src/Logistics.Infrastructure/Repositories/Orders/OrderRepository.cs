@@ -78,10 +78,22 @@ public class OrderRepository : IOrderRepository
     {
         EntityEntry<OrderEntity> result;
         var order = _mapper.Map<OrderEntity>(entity);
+        order.Vehicle = null;
 
         if (order.Id == 0)
         {
+            var existingAddress = await _context.Addresses.FindAsync(order.Address.Id, cancellationToken);
+            if (existingAddress != null)
+            {
+                order.Address = existingAddress;
+            }
+            else
+            {
+                _context.Entry(order.Address).State = EntityState.Added;
+            }
+
             result = await _context.Orders.AddAsync(order, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
         else
         {

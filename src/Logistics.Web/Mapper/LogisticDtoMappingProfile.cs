@@ -50,7 +50,11 @@ public class LogisticDtoMappingProfile : Profile
         
         CreateMap<PromotionDto, Promotion>().ReverseMap();
         
-        CreateMap<UserDto, User>().ReverseMap();
+        CreateMap<User, UserDto>()
+            .ForMember(dest => dest.OrderIds, opt => opt.MapFrom(src => src.Orders.Select(o => o.Id)))
+            .ReverseMap()
+            .ForMember(dest => dest.Orders, opt => opt.Ignore()); // Или настрой обратно через репозиторий
+
         CreateMap<RegisterDto, UserCredential>()
             .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));
         

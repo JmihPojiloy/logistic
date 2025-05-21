@@ -23,6 +23,6 @@ public class WarehouseTypeConfiguration : IEntityTypeConfiguration<WarehouseEnti
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
         
-        builder.HasIndex(warehouse => warehouse.AddressId).IsUnique();
+        builder.HasIndex(warehouse => warehouse.AddressId);
     }
 }

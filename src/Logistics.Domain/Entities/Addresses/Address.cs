@@ -51,7 +51,7 @@ public class Address : BaseEntity
     /// <returns>Строка с полным адресом разделенная запятыми</returns>
     public string GetAddressForGeocoding()
     {
-        if (string.IsNullOrEmpty(Country) ||
+        if (
             string.IsNullOrEmpty(City) ||
             string.IsNullOrEmpty(Street) ||
             string.IsNullOrEmpty(HouseNumber))
@@ -61,7 +61,7 @@ public class Address : BaseEntity
 
         var address = new List<string>
         {
-            Country.Trim(), City.Trim(), Street.Trim(), HouseNumber.Trim()
+            City.Trim(), Street.Trim(), HouseNumber.Trim()
         };
         
         return string.Join(", ", address);

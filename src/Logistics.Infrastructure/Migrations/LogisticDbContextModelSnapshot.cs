@@ -155,7 +155,7 @@ namespace Logistics.Infrastructure.Migrations
                     b.Property<TimeSpan?>("LeadTime")
                         .HasColumnType("interval");
 
-                    b.Property<int>("VehicleId")
+                    b.Property<int?>("VehicleId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -262,8 +262,7 @@ namespace Logistics.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RecipientId")
-                        .IsUnique();
+                    b.HasIndex("RecipientId");
 
                     b.ToTable("Notifications");
                 });
@@ -288,7 +287,7 @@ namespace Logistics.Infrastructure.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("VehicleId")
+                    b.Property<int?>("VehicleId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -296,11 +295,9 @@ namespace Logistics.Infrastructure.Migrations
                     b.HasIndex("AddressId")
                         .IsUnique();
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
-                    b.HasIndex("VehicleId")
-                        .IsUnique();
+                    b.HasIndex("VehicleId");
 
                     b.ToTable("Orders");
                 });
@@ -411,8 +408,7 @@ namespace Logistics.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PaymentId")
-                        .IsUnique();
+                    b.HasIndex("PaymentId");
 
                     b.ToTable("RefundedPayments");
                 });
@@ -671,8 +667,7 @@ namespace Logistics.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("VehicleId")
-                        .IsUnique();
+                    b.HasIndex("VehicleId");
 
                     b.ToTable("VehicleMaintenances");
                 });
@@ -707,8 +702,7 @@ namespace Logistics.Infrastructure.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.HasIndex("ProductId", "WarehouseId")
-                        .IsUnique();
+                    b.HasIndex("ProductId", "WarehouseId");
 
                     b.ToTable("Inventories");
                 });
@@ -857,8 +851,7 @@ namespace Logistics.Infrastructure.Migrations
                     b.HasOne("Logistics.Infrastructure.DatabaseEntity.Vehicles.VehicleEntity", "Vehicle")
                         .WithMany("Orders")
                         .HasForeignKey("VehicleId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.OwnsOne("Logistics.Domain.ValueObjects.Money", "DeliveryCost", b1 =>
                         {

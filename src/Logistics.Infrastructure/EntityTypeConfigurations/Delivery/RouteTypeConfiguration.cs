@@ -38,7 +38,7 @@ public class RouteTypeConfiguration : IEntityTypeConfiguration<RouteEntity>
             .HasForeignKey<RouteEntity>(route => route.AddressId)
             .OnDelete(DeleteBehavior.Cascade);
         
-        builder.HasIndex(route => route.AddressId).IsUnique();
-        builder.HasIndex(route => route.VehicleId).IsUnique();
+        builder.HasIndex(route => route.AddressId);
+        builder.HasIndex(route => route.VehicleId);
     }
 }

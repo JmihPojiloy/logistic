@@ -15,7 +15,7 @@ public class DeliveryScheduleEntity : BaseDatabaseEntity
     /// <summary>
     /// Навигационное свойство заказа
     /// </summary>
-    public required OrderEntity Order { get; set; }
+    public OrderEntity? Order { get; set; }
     
     /// <summary>
     /// Планируемая дата загрузки

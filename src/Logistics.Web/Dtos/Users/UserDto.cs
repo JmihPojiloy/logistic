@@ -48,7 +48,7 @@ public class UserDto : BaseDto
     /// <summary>
     /// Заказы
     /// </summary>
-    public ICollection<OrderDto> Orders { get; set; } = new List<OrderDto>();
+    public ICollection<int> OrderIds { get; set; } = new List<int>();
     
     /// <summary>
     /// Уведомления пользователя

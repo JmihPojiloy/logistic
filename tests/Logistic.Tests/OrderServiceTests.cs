@@ -202,8 +202,8 @@ namespace Logistic.Tests;
 
             var result = await _service.PayOrderAsync(order, _ct);
 
-            Assert.That(result.Id, Is.EqualTo(2));
-            Assert.That(result.DeliveryCost, Is.Not.Null);
+            Assert.That(result.OrderId, Is.EqualTo(2));
+            Assert.That(result.TotalCost, Is.Not.Null);
         }
         
         [Test]

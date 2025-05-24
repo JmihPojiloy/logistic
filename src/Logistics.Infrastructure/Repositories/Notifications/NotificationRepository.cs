@@ -71,7 +71,7 @@ public class NotificationRepository : IRepository<Notification>
     {
         EntityEntry<NotificationEntity> result;
         var notification = _mapper.Map<NotificationEntity>(entity);
-        notification.Recipient.Orders = new List<OrderEntity>();
+        
         if (entity.Id == 0)
         {
             result = await _context.Notifications.AddAsync(notification, cancellationToken);

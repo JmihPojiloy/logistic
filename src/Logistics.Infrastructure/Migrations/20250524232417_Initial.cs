@@ -77,7 +77,7 @@ namespace Logistics.Infrastructure.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Zip = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    County = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Country = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     City = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     Street = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
                     HouseNumber = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
@@ -105,7 +105,7 @@ namespace Logistics.Infrastructure.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Type = table.Column<int>(type: "integer", nullable: false),
-                    RecipientId = table.Column<int>(type: "integer", nullable: false),
+                    RecipientId = table.Column<int>(type: "integer", nullable: true),
                     Title = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     Text = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
                     Status = table.Column<int>(type: "integer", nullable: false),
@@ -120,6 +120,29 @@ namespace Logistics.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Notifications_Users_RecipientId",
                         column: x => x.RecipientId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserCredentials",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Phone = table.Column<int>(type: "integer", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: false),
+                    Role = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserCredentials", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserCredentials_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -185,6 +208,7 @@ namespace Logistics.Infrastructure.Migrations
                     ProductId = table.Column<int>(type: "integer", nullable: false),
                     WarehouseId = table.Column<int>(type: "integer", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false),
+                    xmin = table.Column<uint>(type: "xid", rowVersion: true, nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -295,8 +319,10 @@ namespace Logistics.Infrastructure.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<int>(type: "integer", nullable: false),
-                    VehicleId = table.Column<int>(type: "integer", nullable: false),
+                    VehicleId = table.Column<int>(type: "integer", nullable: true),
                     AddressId = table.Column<int>(type: "integer", nullable: false),
+                    CostAmount = table.Column<decimal>(type: "numeric(18,4)", precision: 18, scale: 4, nullable: true),
+                    Currency = table.Column<int>(type: "integer", nullable: true),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -329,9 +355,11 @@ namespace Logistics.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    VehicleId = table.Column<int>(type: "integer", nullable: false),
+                    VehicleId = table.Column<int>(type: "integer", nullable: true),
                     AddressId = table.Column<int>(type: "integer", nullable: false),
                     Distance = table.Column<int>(type: "integer", nullable: true),
+                    CostAmount = table.Column<decimal>(type: "numeric(18,4)", precision: 18, scale: 4, nullable: true),
+                    Currency = table.Column<int>(type: "integer", nullable: true),
                     LeadTime = table.Column<TimeSpan>(type: "interval", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -505,8 +533,7 @@ namespace Logistics.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Inventories_ProductId_WarehouseId",
                 table: "Inventories",
-                columns: new[] { "ProductId", "WarehouseId" },
-                unique: true);
+                columns: new[] { "ProductId", "WarehouseId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Inventories_WarehouseId",
@@ -522,8 +549,7 @@ namespace Logistics.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Notifications_RecipientId",
                 table: "Notifications",
-                column: "RecipientId",
-                unique: true);
+                column: "RecipientId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderProducts_OrderId",
@@ -555,14 +581,12 @@ namespace Logistics.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
                 table: "Orders",
-                column: "UserId",
-                unique: true);
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_VehicleId",
                 table: "Orders",
-                column: "VehicleId",
-                unique: true);
+                column: "VehicleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_OrderId",
@@ -573,8 +597,7 @@ namespace Logistics.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_RefundedPayments_PaymentId",
                 table: "RefundedPayments",
-                column: "PaymentId",
-                unique: true);
+                column: "PaymentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Routes_AddressId",
@@ -589,10 +612,21 @@ namespace Logistics.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserCredentials_Phone",
+                table: "UserCredentials",
+                column: "Phone",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserCredentials_UserId",
+                table: "UserCredentials",
+                column: "UserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_VehicleMaintenances_VehicleId",
                 table: "VehicleMaintenances",
-                column: "VehicleId",
-                unique: true);
+                column: "VehicleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Vehicles_DeliveryTrackingId",
@@ -652,6 +686,9 @@ namespace Logistics.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Routes");
+
+            migrationBuilder.DropTable(
+                name: "UserCredentials");
 
             migrationBuilder.DropTable(
                 name: "VehicleMaintenances");

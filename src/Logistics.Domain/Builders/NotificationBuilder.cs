@@ -15,7 +15,6 @@ public class NotificationBuilder
     {
         _notification = new Notification
         {
-            Recipient = recipient,
             RecipientId = recipient.Id,
             SendDate = DateTime.UtcNow,
             Status = NotificationStatus.New

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Logistics.Infrastructure.Migrations
 {
     [DbContext(typeof(LogisticDbContext))]
-    [Migration("20250515074515_UpdateOrderAndRoute")]
-    partial class UpdateOrderAndRoute
+    [Migration("20250524232417_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,7 +41,7 @@ namespace Logistics.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<string>("County")
+                    b.Property<string>("Country")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
@@ -158,7 +158,7 @@ namespace Logistics.Infrastructure.Migrations
                     b.Property<TimeSpan?>("LeadTime")
                         .HasColumnType("interval");
 
-                    b.Property<int>("VehicleId")
+                    b.Property<int?>("VehicleId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -243,7 +243,7 @@ namespace Logistics.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
-                    b.Property<int>("RecipientId")
+                    b.Property<int?>("RecipientId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("SendDate")
@@ -265,8 +265,7 @@ namespace Logistics.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RecipientId")
-                        .IsUnique();
+                    b.HasIndex("RecipientId");
 
                     b.ToTable("Notifications");
                 });
@@ -291,7 +290,7 @@ namespace Logistics.Infrastructure.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("VehicleId")
+                    b.Property<int?>("VehicleId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -299,11 +298,9 @@ namespace Logistics.Infrastructure.Migrations
                     b.HasIndex("AddressId")
                         .IsUnique();
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
-                    b.HasIndex("VehicleId")
-                        .IsUnique();
+                    b.HasIndex("VehicleId");
 
                     b.ToTable("Orders");
                 });
@@ -414,8 +411,7 @@ namespace Logistics.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PaymentId")
-                        .IsUnique();
+                    b.HasIndex("PaymentId");
 
                     b.ToTable("RefundedPayments");
                 });
@@ -486,6 +482,41 @@ namespace Logistics.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Promotions");
+                });
+
+            modelBuilder.Entity("Logistics.Infrastructure.DatabaseEntity.Users.UserCredentialEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Phone")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Phone")
+                        .IsUnique();
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserCredentials");
                 });
 
             modelBuilder.Entity("Logistics.Infrastructure.DatabaseEntity.Users.UserEntity", b =>
@@ -639,8 +670,7 @@ namespace Logistics.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("VehicleId")
-                        .IsUnique();
+                    b.HasIndex("VehicleId");
 
                     b.ToTable("VehicleMaintenances");
                 });
@@ -665,12 +695,17 @@ namespace Logistics.Infrastructure.Migrations
                     b.Property<int>("WarehouseId")
                         .HasColumnType("integer");
 
+                    b.Property<uint>("Xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
                     b.HasKey("Id");
 
                     b.HasIndex("WarehouseId");
 
-                    b.HasIndex("ProductId", "WarehouseId")
-                        .IsUnique();
+                    b.HasIndex("ProductId", "WarehouseId");
 
                     b.ToTable("Inventories");
                 });
@@ -796,8 +831,7 @@ namespace Logistics.Infrastructure.Migrations
                     b.HasOne("Logistics.Infrastructure.DatabaseEntity.Users.UserEntity", "Recipient")
                         .WithMany("Notifications")
                         .HasForeignKey("RecipientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Recipient");
                 });
@@ -819,8 +853,7 @@ namespace Logistics.Infrastructure.Migrations
                     b.HasOne("Logistics.Infrastructure.DatabaseEntity.Vehicles.VehicleEntity", "Vehicle")
                         .WithMany("Orders")
                         .HasForeignKey("VehicleId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.OwnsOne("Logistics.Domain.ValueObjects.Money", "DeliveryCost", b1 =>
                         {
@@ -988,6 +1021,17 @@ namespace Logistics.Infrastructure.Migrations
                         });
 
                     b.Navigation("Price");
+                });
+
+            modelBuilder.Entity("Logistics.Infrastructure.DatabaseEntity.Users.UserCredentialEntity", b =>
+                {
+                    b.HasOne("Logistics.Infrastructure.DatabaseEntity.Users.UserEntity", "User")
+                        .WithOne()
+                        .HasForeignKey("Logistics.Infrastructure.DatabaseEntity.Users.UserCredentialEntity", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Logistics.Infrastructure.DatabaseEntity.Vehicles.DriverEntity", b =>

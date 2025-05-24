@@ -42,6 +42,7 @@ public class LogisticDtoMappingProfile : Profile
         CreateMap<OrderDto, Order>().ReverseMap();
         CreateMap<OrderProductDto, OrderProduct>().ReverseMap();
         CreateMap<OrderPromotionDto, OrderPromotion>().ReverseMap();
+        CreateMap<PaidOrderDto, PaidOrder>().ReverseMap();
 
         CreateMap<PaymentDto, Payment>().ReverseMap();
         CreateMap<RefundedPaymentDto, RefundedPayment>().ReverseMap();
@@ -51,9 +52,15 @@ public class LogisticDtoMappingProfile : Profile
         CreateMap<PromotionDto, Promotion>().ReverseMap();
         
         CreateMap<User, UserDto>()
-            .ForMember(dest => dest.OrderIds, opt => opt.MapFrom(src => src.Orders.Select(o => o.Id)))
+            .ForMember(dest => dest.OrderIds,
+                opt => 
+                    opt.MapFrom(src => src.Orders.Select(o => o.Id)))
+            .ForMember(dest => dest.NotificationsIds,
+                opt => 
+                    opt.MapFrom(src => src.Notifications.Select(o => o.Id)))
             .ReverseMap()
-            .ForMember(dest => dest.Orders, opt => opt.Ignore()); // Или настрой обратно через репозиторий
+            .ForMember(dest => dest.Orders, opt => opt.Ignore())
+            .ForMember(dest => dest.Notifications, opt => opt.Ignore());
 
         CreateMap<RegisterDto, UserCredential>()
             .ForMember(dest => dest.PasswordHash, opt => opt.MapFrom(src => src.Password));

@@ -16,12 +16,12 @@ public class NotificationDto : BaseDto
     /// <summary>
     /// Id получателя
     /// </summary>
-    public int RecipientId { get; set; }
+    public int? RecipientId { get; set; }
     
     /// <summary>
     /// Навигационное свойство получателя
     /// </summary>
-    public required UserDto Recipient { get; set; }
+    public UserDto? Recipient { get; set; }
     
     /// <summary>
     /// Заголовок уведомления

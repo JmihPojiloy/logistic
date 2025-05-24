@@ -38,7 +38,7 @@ namespace Logistics.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<string>("County")
+                    b.Property<string>("Country")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
@@ -240,7 +240,7 @@ namespace Logistics.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
-                    b.Property<int>("RecipientId")
+                    b.Property<int?>("RecipientId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("SendDate")
@@ -828,8 +828,7 @@ namespace Logistics.Infrastructure.Migrations
                     b.HasOne("Logistics.Infrastructure.DatabaseEntity.Users.UserEntity", "Recipient")
                         .WithMany("Notifications")
                         .HasForeignKey("RecipientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Recipient");
                 });

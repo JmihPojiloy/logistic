@@ -51,7 +51,8 @@ public class OrderController : ControllerBase
     public async Task<IActionResult> PayOrderAsync(OrderDto orderDto, CancellationToken cancellationToken)
     {
         var order = _mapper.Map<Order>(orderDto);
-        var result = await _orderService.PayOrderAsync(order, cancellationToken);
+        var paidOrder = await _orderService.PayOrderAsync(order, cancellationToken);
+        var result = _mapper.Map<PaidOrderDto>(paidOrder);
         
         return Ok(result);
     }

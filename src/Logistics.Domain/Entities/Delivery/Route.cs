@@ -70,7 +70,8 @@ public class Route : BaseEntity
         var u = Math.Sin((double)((endLatitude - startLatitude) / 2)!);
         var v = Math.Sin((double)((endLongitude - startLongitude) / 2)!);
         var result = 
-            2.0 * earthRadiusKm * Math.Asin(Math.Sqrt(u * u + Math.Cos((double)startLatitude!) * Math.Cos((double)endLatitude!) * v * v));
+            2.0 * earthRadiusKm * Math.Asin(Math.Sqrt(u * u + Math.Cos((double)startLatitude!) * 
+                Math.Cos((double)endLatitude!) * v * v));
         
         Distance = (int)result;
     }

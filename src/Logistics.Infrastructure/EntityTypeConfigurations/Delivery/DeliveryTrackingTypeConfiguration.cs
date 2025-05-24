@@ -22,6 +22,6 @@ public class DeliveryTrackingTypeConfiguration : IEntityTypeConfiguration<Delive
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
         
-        builder.HasIndex(tracking => tracking.VehicleId).IsUnique();
+        builder.HasIndex(tracking => tracking.VehicleId);
     }
 }

@@ -49,7 +49,8 @@ public class PromotionRepository : IRepository<Promotion>
     /// <param name="filter">Фильтр параметров</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Все акции</returns>
-    public async Task<IReadOnlyList<Promotion>> GetAllByFilterAsync(IFilter? filter = null,CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<Promotion>> GetAllByFilterAsync(IFilter? filter = null,
+        CancellationToken cancellationToken = default)
     {
         var query = _context.Promotions.AsQueryable();
         if (filter is PromotionsFilter promotionFilter)

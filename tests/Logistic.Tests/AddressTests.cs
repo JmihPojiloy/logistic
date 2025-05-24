@@ -22,9 +22,9 @@ public class AddressTests
     }
 
     [TestCase(null, "City", "Street", "1")]
-    [TestCase("County", null, "Street", "1")]
-    [TestCase("County", "City", null, "1")]
-    [TestCase("County", "City", "Street", null)]
+    [TestCase("Country", null, "Street", "1")]
+    [TestCase("Country", "City", null, "1")]
+    [TestCase("Country", "City", "Street", null)]
     public void GetAddressForGeocoding_MissingFields_ReturnsEmpty(
         string? country, string? city, string? street, string? houseNumber)
     {

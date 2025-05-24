@@ -39,7 +39,7 @@
       <div v-for="address in editableUser.addresses" :key="address.id" class="address-block">
       <div><strong>ID:</strong> {{ address.id }}</div>
         <div><label>Индекс:</label> <input v-model="address.zip" /></div>
-        <div><label>Страна:</label> <input v-model="address.county" /></div>
+        <div><label>Страна:</label> <input v-model="address.country" /></div>
         <div><label>Город:</label> <input v-model="address.city" /></div>
         <div><label>Улица:</label> <input v-model="address.street" /></div>
         <div><label>Дом:</label> <input v-model="address.houseNumber" /></div>

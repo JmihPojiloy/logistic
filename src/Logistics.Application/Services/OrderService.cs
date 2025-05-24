@@ -11,6 +11,7 @@ using Logistics.Domain.Entities.Orders;
 using Logistics.Domain.Entities.Payments;
 using Logistics.Domain.Entities.Products;
 using Logistics.Domain.Entities.Promotions;
+using Logistics.Domain.Entities.Users;
 using Logistics.Domain.Entities.Vehicles;
 using Logistics.Domain.Entities.Warehouses;
 using Logistics.Domain.Enums;
@@ -24,7 +25,7 @@ public class OrderService : IOrderService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPaymentService _paymentService;
     private readonly IGeoService _geoService;
-    private const decimal CostByKm = 10.00m;
+    private const decimal CostByKm = 1.00m;
     private const int CarSpeedAverage = 60;
 
     public OrderService(IUnitOfWork unitOfWork, IPaymentService paymentService, IGeoService geoService)
@@ -139,13 +140,14 @@ public class OrderService : IOrderService
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>Оплаченный заказ</returns>
     /// <exception cref="OrderException">Ошибка оплаты заказа</exception>
-    public async Task<Order> PayOrderAsync(Order order, CancellationToken cancellationToken)
+    public async Task<PaidOrder> PayOrderAsync(Order order, CancellationToken cancellationToken)
     {
         var orderRepo = _unitOfWork.GetRepository<Order>();
         var paymentRepo = _unitOfWork.GetRepository<Payment>();
-        var productRepo = _unitOfWork.GetRepository<Product>();
+        var productRepo = _unitOfWork.GetRepository<Product>(); 
         var inventoryRepo = _unitOfWork.GetRepository<Inventory>();
         var promotionRepo = _unitOfWork.GetRepository<Promotion>();
+        var userRepository = _unitOfWork.GetRepository<User>();
         
         var temp = await orderRepo.AddOrUpdateAsync(order, cancellationToken);
 
@@ -159,6 +161,13 @@ public class OrderService : IOrderService
         
         var products = await productRepo.GetAllByFilterAsync(productFilter, cancellationToken);
 
+        var orderResult = new PaidOrder
+        {
+            OrderId = processedOrder.Id,
+            Status = OrderStatus.Assembly,
+            CreatedDate = DateTime.UtcNow,
+        };
+        
         try
         {
             await _unitOfWork.BeginTransactionAsync(cancellationToken);
@@ -207,6 +216,8 @@ public class OrderService : IOrderService
             await paymentRepo.AddOrUpdateAsync(payment, cancellationToken);
 
             await _unitOfWork.CommitAsync(cancellationToken);
+            
+            orderResult.TotalCost = payment.Amount;
         }
         catch (InventoryException ex)
         {
@@ -217,22 +228,29 @@ public class OrderService : IOrderService
             await _unitOfWork.RollbackAsync(cancellationToken);
             throw new OrderException(order.Id, $"Ошибка при оплате заказа {ex.Message}");
         }
-
-        await FillRoute(processedOrder, cancellationToken);
+        
+        var (leadTime, distance, driverName) = await FillRoute(processedOrder, cancellationToken);
+        
+        orderResult.LeadTime = leadTime;
+        orderResult.Distance = distance;
+        orderResult.DriverName = driverName;
+        
         await CreateTrackingAndSchedule(processedOrder, cancellationToken);
         
-        // var notificationRepo = _unitOfWork.GetRepository<Notification>();
-        //
-        // var notification = processedOrder.User?.Notify()
-        //     .WithTitle("Заказ успешно оформлен!")
-        //     .WithText($"Ваш заказ №{processedOrder.Id} оплачен и уже отправлен в доставку.")
-        //     .WithType(NotificationType.Payment)
-        //     .Build();
-        //
-        // await notificationRepo.AddOrUpdateAsync(notification!, cancellationToken);
-        // await _unitOfWork.SaveChangesAsync(cancellationToken);
+        var notificationRepo = _unitOfWork.GetRepository<Notification>();
+        var user = await userRepository.GetByIdAsync(order.UserId, cancellationToken);
+        user.Addresses = null;
         
-        return processedOrder;
+        var notification = user.Notify()
+            .WithTitle("Заказ успешно оформлен!")
+            .WithText($"Ваш заказ №{processedOrder.Id} оплачен и уже отправлен в доставку.")
+            .WithType(NotificationType.Payment)
+            .Build();
+        
+        await notificationRepo.AddOrUpdateAsync(notification!, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        return orderResult;
     }
 
     /// <summary>
@@ -241,7 +259,7 @@ public class OrderService : IOrderService
     /// <param name="processedOrder">Заказ</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <exception cref="OrderException">Ошибка оформления заказа</exception>
-    private async Task FillRoute(Order processedOrder, CancellationToken cancellationToken)
+    private async Task<(TimeSpan? leadTime, int? distance, string driverName)> FillRoute(Order processedOrder, CancellationToken cancellationToken)
     {
         var driverRepo = _unitOfWork.GetRepository<Driver>();
         var routeRepo = _unitOfWork.GetRepository<Route>();
@@ -271,15 +289,11 @@ public class OrderService : IOrderService
         if(route == null || driver == null || vehicle == null) 
             throw new OrderException(processedOrder.Id, "Ошибка в формировании маршрута.");
         
-        //vehicle.Driver = driver;
-        //vehicle.Route = route;
-        vehicle.Status = VehicleStatus.OnRoute;
+        //vehicle.Status = VehicleStatus.OnRoute;
         
-        //driver.Vehicle = vehicle;
         driver.VehicleId = vehicle.Id;
-        driver.Status = DriverStatus.OnRoute;
+        //driver.Status = DriverStatus.OnRoute;
         
-        //route.Vehicle = vehicle;
         route.VehicleId = vehicle.Id;
         
         if (route.Distance.HasValue && CarSpeedAverage > 0)
@@ -302,6 +316,8 @@ public class OrderService : IOrderService
             await _unitOfWork.RollbackAsync(cancellationToken);
             throw new OrderException(processedOrder.Id, "Ошибка при оформлении маршрута");
         }
+
+        return (route.LeadTime, route.Distance, driver.FirstName);
     }
 
     /// <summary>
@@ -333,7 +349,6 @@ public class OrderService : IOrderService
 
         var deliveryTracking = new DeliveryTracking
         {
-            Vehicle = processedOrder.Vehicle!,
             VehicleId = (int)processedOrder.VehicleId!,
             CreatedDate = DateTime.UtcNow,
         };

@@ -24,6 +24,6 @@ public class DeliveryScheduleTypeConfiguration : IEntityTypeConfiguration<Delive
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
         
-        builder.HasIndex(deliverySchedule => deliverySchedule.OrderId).IsUnique();
+        builder.HasIndex(deliverySchedule => deliverySchedule.OrderId);
     }
 }

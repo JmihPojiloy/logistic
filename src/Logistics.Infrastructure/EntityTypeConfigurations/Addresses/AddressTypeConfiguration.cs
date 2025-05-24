@@ -14,7 +14,7 @@ public class AddressTypeConfiguration : IEntityTypeConfiguration<AddressEntity>
         builder.HasKey(address => address.Id);
 
         builder.Property(address => address.Zip).HasMaxLength(50);
-        builder.Property(address => address.County).HasMaxLength(100);
+        builder.Property(address => address.Country).HasMaxLength(100);
         builder.Property(address => address.City).HasMaxLength(100);
         builder.Property(address => address.Street).HasMaxLength(250);
         builder.Property(address => address.HouseNumber).HasMaxLength(20);

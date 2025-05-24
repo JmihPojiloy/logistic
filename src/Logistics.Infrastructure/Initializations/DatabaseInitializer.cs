@@ -60,6 +60,7 @@ public class DatabaseInitializer : IDatabaseInitializer
             }
 
             InitAdmin();
+            InitUsers();
             
             _context.SaveChanges();
         }
@@ -108,7 +109,7 @@ public class DatabaseInitializer : IDatabaseInitializer
             Address = new AddressEntity
             {
                 Zip = "119017",
-                County = "РФ",
+                Country = "РФ",
                 City = "Москва",
                 Street = "Лаврушкинский переулок",
                 HouseNumber = "10с4",
@@ -254,6 +255,58 @@ public class DatabaseInitializer : IDatabaseInitializer
 
         _context.UserCredentials.Add(credential);
         _logger.LogInformation("Admin user created successfully.");
+    }
+
+    private void InitUsers()
+    {
+        _logger.LogInformation("Checking for existing users...");
+        
+        if (_context.UserCredentials.Any(c => c.Role == UserRole.User))
+        {
+            _logger.LogInformation("Admin user already exists. Skipping admin seeding.");
+            return;
+        }
+        
+        var user = new UserEntity
+        {
+            FirstName = "Test",
+            LastName = "Test user",
+            CreatedOn = DateTime.UtcNow
+        };
+
+        var address = new AddressEntity
+        {
+           CreatedOn = DateTime.UtcNow,
+           Zip = "400081",
+           Country = "РФ",
+           City = "Волгоград",
+           Street = "улица Бурейская",
+           HouseNumber = "3",
+           ApartmentNumber = "4",
+        };
+        
+        user.Addresses.Add(address);
+        
+        _context.Users.Add(user);
+        _context.SaveChanges();
+
+        var registrationUser = _context.Users.FirstOrDefault(u => u.FirstName == "Test");
+        
+        if(registrationUser == null) throw new NullReferenceException("Test user not found.");
+        
+        var credential = new UserCredentialEntity
+        {
+            Phone = 123,
+            Role = UserRole.User,
+            UserId = registrationUser.Id,
+            User = registrationUser
+            
+        };
+
+        credential.PasswordHash = _passwordService.HashPassword("123");
+
+        _context.UserCredentials.Add(credential);
+        _logger.LogInformation("Test user created successfully.");
     }
 
 }

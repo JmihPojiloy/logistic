@@ -80,13 +80,13 @@ public class UserController : ControllerBase
     {
         foreach (var addr in user.Addresses)
         {
-            Console.WriteLine($"DTO: {addr.Street}, County = {addr.Country}");
+            Console.WriteLine($"DTO: {addr.Street}, Country = {addr.Country}");
         }
         var userEntity = _mapper.Map<User>(user);
         
         foreach (var addr in userEntity.Addresses)
         {
-            Console.WriteLine($"Entity: {addr.Street}, County = {addr.Country}");
+            Console.WriteLine($"Entity: {addr.Street}, Country = {addr.Country}");
         }
         
         var result = await _userService.AddOrUpdateAsync(userEntity, cancellationToken);

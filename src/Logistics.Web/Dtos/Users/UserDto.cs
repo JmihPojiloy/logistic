@@ -53,5 +53,5 @@ public class UserDto : BaseDto
     /// <summary>
     /// Уведомления пользователя
     /// </summary>
-    public ICollection<NotificationDto> Notifications { get; set; } = new List<NotificationDto>();
+    public ICollection<int> NotificationsIds { get; set; } = new List<int>();
 }

@@ -10,12 +10,12 @@ public class DeliveryTracking : BaseEntity
     /// <summary>
     /// Id транспорта
     /// </summary>
-    public int VehicleId { get; set; }
+    public int? VehicleId { get; set; }
     
     /// <summary>
     /// Навигационное свойство транспорта
     /// </summary>
-    public required Vehicle Vehicle { get; set; }
+    public Vehicle? Vehicle { get; set; }
     
     /// <summary>
     /// Широта

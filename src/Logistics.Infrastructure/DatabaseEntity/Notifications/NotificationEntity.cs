@@ -16,12 +16,12 @@ public class NotificationEntity : BaseDatabaseEntity
     /// <summary>
     /// Id получателя
     /// </summary>
-    public int RecipientId { get; set; }
+    public int? RecipientId { get; set; }
     
     /// <summary>
     /// Навигационное свойство получателя
     /// </summary>
-    public required UserEntity Recipient { get; set; }
+    public UserEntity? Recipient { get; set; }
     
     /// <summary>
     /// Заголовок уведомления

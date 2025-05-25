@@ -101,8 +101,7 @@ namespace Logistics.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId")
-                        .IsUnique();
+                    b.HasIndex("OrderId");
 
                     b.ToTable("DeliverySchedules");
                 });
@@ -129,8 +128,7 @@ namespace Logistics.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("VehicleId")
-                        .IsUnique();
+                    b.HasIndex("VehicleId");
 
                     b.ToTable("DeliveryTrackings");
                 });
@@ -160,8 +158,7 @@ namespace Logistics.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId")
-                        .IsUnique();
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("VehicleId")
                         .IsUnique();
@@ -281,6 +278,9 @@ namespace Logistics.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int?>("PaymentId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
@@ -292,8 +292,9 @@ namespace Logistics.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId")
-                        .IsUnique();
+                    b.HasIndex("AddressId");
+
+                    b.HasIndex("PaymentId");
 
                     b.HasIndex("UserId");
 
@@ -380,8 +381,7 @@ namespace Logistics.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId")
-                        .IsUnique();
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Payments");
                 });
@@ -734,8 +734,7 @@ namespace Logistics.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId")
-                        .IsUnique();
+                    b.HasIndex("AddressId");
 
                     b.ToTable("Warehouses");
                 });
@@ -751,8 +750,8 @@ namespace Logistics.Infrastructure.Migrations
             modelBuilder.Entity("Logistics.Infrastructure.DatabaseEntity.Delivery.DeliveryScheduleEntity", b =>
                 {
                     b.HasOne("Logistics.Infrastructure.DatabaseEntity.Orders.OrderEntity", "Order")
-                        .WithOne()
-                        .HasForeignKey("Logistics.Infrastructure.DatabaseEntity.Delivery.DeliveryScheduleEntity", "OrderId")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -762,8 +761,8 @@ namespace Logistics.Infrastructure.Migrations
             modelBuilder.Entity("Logistics.Infrastructure.DatabaseEntity.Delivery.DeliveryTrackingEntity", b =>
                 {
                     b.HasOne("Logistics.Infrastructure.DatabaseEntity.Vehicles.VehicleEntity", "Vehicle")
-                        .WithOne()
-                        .HasForeignKey("Logistics.Infrastructure.DatabaseEntity.Delivery.DeliveryTrackingEntity", "VehicleId")
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -773,8 +772,8 @@ namespace Logistics.Infrastructure.Migrations
             modelBuilder.Entity("Logistics.Infrastructure.DatabaseEntity.Delivery.RouteEntity", b =>
                 {
                     b.HasOne("Logistics.Infrastructure.DatabaseEntity.Addresses.AddressEntity", "Address")
-                        .WithOne()
-                        .HasForeignKey("Logistics.Infrastructure.DatabaseEntity.Delivery.RouteEntity", "AddressId")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -836,10 +835,14 @@ namespace Logistics.Infrastructure.Migrations
             modelBuilder.Entity("Logistics.Infrastructure.DatabaseEntity.Orders.OrderEntity", b =>
                 {
                     b.HasOne("Logistics.Infrastructure.DatabaseEntity.Addresses.AddressEntity", "Address")
-                        .WithOne()
-                        .HasForeignKey("Logistics.Infrastructure.DatabaseEntity.Orders.OrderEntity", "AddressId")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Logistics.Infrastructure.DatabaseEntity.Payments.PaymentEntity", "Payment")
+                        .WithMany()
+                        .HasForeignKey("PaymentId");
 
                     b.HasOne("Logistics.Infrastructure.DatabaseEntity.Users.UserEntity", "User")
                         .WithMany("Orders")
@@ -877,6 +880,8 @@ namespace Logistics.Infrastructure.Migrations
                     b.Navigation("Address");
 
                     b.Navigation("DeliveryCost");
+
+                    b.Navigation("Payment");
 
                     b.Navigation("User");
 
@@ -924,9 +929,9 @@ namespace Logistics.Infrastructure.Migrations
             modelBuilder.Entity("Logistics.Infrastructure.DatabaseEntity.Payments.PaymentEntity", b =>
                 {
                     b.HasOne("Logistics.Infrastructure.DatabaseEntity.Orders.OrderEntity", "Order")
-                        .WithOne("Payment")
-                        .HasForeignKey("Logistics.Infrastructure.DatabaseEntity.Payments.PaymentEntity", "OrderId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.OwnsOne("Logistics.Domain.ValueObjects.Money", "Amount", b1 =>
@@ -1106,8 +1111,8 @@ namespace Logistics.Infrastructure.Migrations
             modelBuilder.Entity("Logistics.Infrastructure.DatabaseEntity.Warehouses.WarehouseEntity", b =>
                 {
                     b.HasOne("Logistics.Infrastructure.DatabaseEntity.Addresses.AddressEntity", "Address")
-                        .WithOne()
-                        .HasForeignKey("Logistics.Infrastructure.DatabaseEntity.Warehouses.WarehouseEntity", "AddressId")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1124,8 +1129,6 @@ namespace Logistics.Infrastructure.Migrations
                     b.Navigation("OrderProducts");
 
                     b.Navigation("OrderPromotions");
-
-                    b.Navigation("Payment");
                 });
 
             modelBuilder.Entity("Logistics.Infrastructure.DatabaseEntity.Payments.PaymentEntity", b =>

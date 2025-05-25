@@ -10,7 +10,6 @@ public class AddressTests
     {
         var address = new Address
         {
-            Country = " Russia ",
             City = " Moscow ",
             Street = " Tverskaya ",
             HouseNumber = "1"
@@ -18,10 +17,9 @@ public class AddressTests
 
         var result = address.GetAddressForGeocoding();
 
-        Assert.That(result, Is.EqualTo("Russia, Moscow, Tverskaya, 1"));
+        Assert.That(result, Is.EqualTo("Moscow, Tverskaya, 1"));
     }
-
-    [TestCase(null, "City", "Street", "1")]
+    
     [TestCase("Country", null, "Street", "1")]
     [TestCase("Country", "City", null, "1")]
     [TestCase("Country", "City", "Street", null)]

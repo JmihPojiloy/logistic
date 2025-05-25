@@ -40,7 +40,7 @@ public class OrderDto : BaseDto
     /// <summary>
     /// Навигационное свойство адреса
     /// </summary>
-    public required AddressDto Address { get; set; }
+    public AddressDto? Address { get; set; }
     
     /// <summary>
     /// Навигационное свойство платежа

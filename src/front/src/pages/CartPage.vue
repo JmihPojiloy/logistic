@@ -99,10 +99,12 @@ async function placeOrder() {
 }
 
 async function payOrder() {
+
+  console.log("Paying order:", JSON.stringify(order.value));
   const res = await axiosInstance.post('/orders/pay', order.value, {
     headers: { Authorization: `Bearer ${auth.token}` }
   });
-
+  console.log("Paying order:", JSON.stringify(order.value));
   paidOrderData.value = res.data;
 }
 

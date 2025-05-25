@@ -59,7 +59,7 @@ public class OrderService : IOrderService
         try
         {
             await _unitOfWork.BeginTransactionAsync(cancellationToken);
-            var deliveryAddress = order.Address;
+            var deliveryAddress = await addressRepo.GetByIdAsync(order.AddressId, cancellationToken);
 
             if (deliveryAddress.Latitude == null || deliveryAddress.Longitude == null)
             {

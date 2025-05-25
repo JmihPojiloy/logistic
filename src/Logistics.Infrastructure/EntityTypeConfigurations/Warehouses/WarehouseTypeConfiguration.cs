@@ -18,10 +18,11 @@ public class WarehouseTypeConfiguration : IEntityTypeConfiguration<WarehouseEnti
         builder.Property(warehouse => warehouse.Status).HasConversion<int>();
         
         builder.HasOne(warehouse => warehouse.Address)
-            .WithOne()
-            .HasForeignKey<WarehouseEntity>(warehouse => warehouse.AddressId)
+            .WithMany()
+            .HasForeignKey(warehouse => warehouse.AddressId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
+        ;
         
         builder.HasIndex(warehouse => warehouse.AddressId);
     }

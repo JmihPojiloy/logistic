@@ -36,8 +36,8 @@ public class OrderTypeConfiguration : IEntityTypeConfiguration<OrderEntity>
             .OnDelete(DeleteBehavior.SetNull);
         
         builder.HasOne(order => order.Address)
-            .WithOne()
-            .HasForeignKey<OrderEntity>(order => order.AddressId)
+            .WithMany() 
+            .HasForeignKey(order => order.AddressId)
             .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasIndex(order => order.AddressId);

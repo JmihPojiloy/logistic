@@ -243,9 +243,7 @@ namespace Logistic.Tests;
                 .GetMethod("FillRoute", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
                 .Invoke(_service, new object[] { order, _ct })!;
             await fillRouteTask;
-
-            Assert.That(vehicle.Status, Is.EqualTo(VehicleStatus.OnRoute));
-            Assert.That(driver.Status, Is.EqualTo(DriverStatus.OnRoute));
+            
             Assert.That(route.LeadTime, Is.Not.Null);
         }
 

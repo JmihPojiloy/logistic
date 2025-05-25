@@ -19,8 +19,8 @@ public class DeliveryScheduleTypeConfiguration : IEntityTypeConfiguration<Delive
         builder.Property(deliverySchedule => deliverySchedule.ActualDeliveryDate);
         
         builder.HasOne(deliverySchedule => deliverySchedule.Order)
-            .WithOne()
-            .HasForeignKey<DeliveryScheduleEntity>(deliverySchedule => deliverySchedule.OrderId)
+            .WithMany()
+            .HasForeignKey(deliverySchedule => deliverySchedule.OrderId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
         

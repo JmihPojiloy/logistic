@@ -32,10 +32,11 @@ public class RouteTypeConfiguration : IEntityTypeConfiguration<RouteEntity>
             .HasForeignKey<RouteEntity>(route => route.VehicleId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
-            
+        
         builder.HasOne(route => route.Address)
-            .WithOne()
-            .HasForeignKey<RouteEntity>(route => route.AddressId)
+            .WithMany()
+            .HasForeignKey(route => route.AddressId)
+            .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasIndex(route => route.AddressId);

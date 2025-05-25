@@ -17,8 +17,8 @@ public class DeliveryTrackingTypeConfiguration : IEntityTypeConfiguration<Delive
         builder.Property(tracking => tracking.Longitude);
         
         builder.HasOne(tracking => tracking.Vehicle)
-            .WithOne()
-            .HasForeignKey<DeliveryTrackingEntity>(tracking => tracking.VehicleId)
+            .WithMany()
+            .HasForeignKey(tracking => tracking.VehicleId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
         

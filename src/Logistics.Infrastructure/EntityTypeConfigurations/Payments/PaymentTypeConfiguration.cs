@@ -29,9 +29,9 @@ public class PaymentTypeConfiguration : IEntityTypeConfiguration<PaymentEntity>
         builder.Property(payment => payment.PaymentDate);
         
         builder.HasOne(payment => payment.Order)
-            .WithOne(order => order.Payment)
-            .HasForeignKey<PaymentEntity>(payment => payment.OrderId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .WithMany()
+            .HasForeignKey(payment => payment.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasIndex(payment => payment.OrderId);
     }

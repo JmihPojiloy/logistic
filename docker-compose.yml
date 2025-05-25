@@ -11,6 +11,17 @@ services:
       - db
     networks:
       - logistic-network
+  frontend:
+    build:
+      context: ./src/front
+      dockerfile: Dockerfile
+    ports:
+      - "4000:80"  
+    container_name: vue-frontend
+    depends_on:
+      - web
+    networks:
+      - logistic-network
   db:
     image: postgres:latest
     ports:
